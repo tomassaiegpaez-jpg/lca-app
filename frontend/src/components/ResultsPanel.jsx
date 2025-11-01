@@ -13,34 +13,22 @@ function ResultsPanel({ results }) {
         <div className="goal-scope-summary incomplete">
           <div className="goal-scope-header">
             <h3>ISO 14044 Goal & Scope Definition</h3>
-            <span className="compliance-badge incomplete">⚠️ Incomplete</span>
           </div>
           <p className="goal-scope-note">Goal & Scope was not fully inferred from the analysis. Some ISO 14044 elements may be missing.</p>
         </div>
       )
     }
 
-    const compliance = goalScope.iso_compliance || {}
-
     return (
       <div className="goal-scope-summary">
         <div className="goal-scope-header">
           <h3>ISO 14044 Goal & Scope Definition</h3>
-          <div className="goal-scope-controls">
-            {compliance.level && (
-              <span className={`compliance-badge ${compliance.level}`}>
-                {compliance.level === 'high' && '✅ High Compliance'}
-                {compliance.level === 'medium' && '⚠️ Partial Compliance'}
-                {compliance.level === 'low' && '❌ Low Compliance'}
-              </span>
-            )}
-            <button
-              className="toggle-details"
-              onClick={() => setShowGoalScope(!showGoalScope)}
-            >
-              {showGoalScope ? 'Hide Details' : 'Show Details'}
-            </button>
-          </div>
+          <button
+            className="toggle-details"
+            onClick={() => setShowGoalScope(!showGoalScope)}
+          >
+            {showGoalScope ? 'Hide Details' : 'Show Details'}
+          </button>
         </div>
 
         <div className="goal-scope-brief">
@@ -280,21 +268,6 @@ function ResultsPanel({ results }) {
           </div>
         )}
 
-        {/* Product System Diagram */}
-        {result.diagram && result.diagram.nodes && result.diagram.nodes.length > 0 && (
-          <div className="process-diagram-container">
-            <div className="diagram-header">
-              <h3>Product System Diagram</h3>
-              <span className="diagram-stats">
-                {result.diagram.metadata.total_processes} processes, {result.diagram.metadata.total_links} links
-              </span>
-            </div>
-            <div className="ascii-diagram">
-              <pre>{buildASCIITree(result.diagram)}</pre>
-            </div>
-          </div>
-        )}
-
         {/* Impact Categories Table */}
         {sortedImpacts.length > 0 ? (
           <div className="impact-table-container">
@@ -327,6 +300,21 @@ function ResultsPanel({ results }) {
         ) : (
           <div className="no-impacts">
             <p>No impact data available</p>
+          </div>
+        )}
+
+        {/* Product System Diagram */}
+        {result.diagram && result.diagram.nodes && result.diagram.nodes.length > 0 && (
+          <div className="process-diagram-container">
+            <div className="diagram-header">
+              <h3>Product System Diagram</h3>
+              <span className="diagram-stats">
+                {result.diagram.metadata.total_processes} processes, {result.diagram.metadata.total_links} links
+              </span>
+            </div>
+            <div className="ascii-diagram">
+              <pre>{buildASCIITree(result.diagram)}</pre>
+            </div>
           </div>
         )}
       </div>
