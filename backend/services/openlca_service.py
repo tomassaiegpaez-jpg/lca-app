@@ -89,7 +89,6 @@ class GoalAndScope:
     study_goal: str  # Intended application
     reasons_for_study: str  # Why is the study being conducted?
     intended_audience: str  # To whom are results communicated?
-    comparative_assertion: bool = False  # Will results be used for public comparative assertions?
 
     # Scope definition (ISO 14044:2006 Section 4.2.3)
     functional_unit: FunctionalUnit
@@ -103,6 +102,9 @@ class GoalAndScope:
 
     # Impact assessment method
     impact_method: str  # LCIA method used (e.g., "ILCD 2011 Midpoint")
+
+    # Fields with defaults must come last
+    comparative_assertion: bool = False  # Will results be used for public comparative assertions?
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
