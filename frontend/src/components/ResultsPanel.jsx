@@ -5,6 +5,8 @@ function ResultsPanel({ results }) {
   const [activeTab, setActiveTab] = useState(0)
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
   const [showGoalScope, setShowGoalScope] = useState(false)
+  const [showImpacts, setShowImpacts] = useState(true)
+  const [showDiagram, setShowDiagram] = useState(true)
 
   // Render goal and scope summary - always shown, AI-inferred
   const renderGoalScopeSummary = (goalScope) => {
@@ -254,11 +256,6 @@ function ResultsPanel({ results }) {
         {/* Product System Title - At the top */}
         <div className="result-header">
           <h2>{result.product_system || `Process ${result.process_id?.substring(0, 8)}`}</h2>
-          <div className="result-meta">
-            <span><strong>Method:</strong> {result.impact_method}</span>
-            <span><strong>Functional Unit:</strong> {result.functional_unit_text || `${result.functional_unit} ${result.functional_unit_unit || 'unit(s)'}`}</span>
-            <span><strong>Mode:</strong> {result.calculation_mode}</span>
-          </div>
         </div>
 
         {/* Goal & Scope Summary - Always shown, AI-inferred */}
@@ -276,29 +273,37 @@ function ResultsPanel({ results }) {
           <div className="impact-table-container">
             <div className="table-header">
               <h3>Impact Categories ({sortedImpacts.length})</h3>
+              <button
+                className="toggle-details"
+                onClick={() => setShowImpacts(!showImpacts)}
+              >
+                {showImpacts ? 'Hide Details' : 'Show Details'}
+              </button>
             </div>
-            <table className="impact-table">
-              <thead>
-                <tr>
-                  <th onClick={() => handleSort('category')} className="sortable">
-                    Category {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                  </th>
-                  <th onClick={() => handleSort('amount')} className="sortable">
-                    Amount {sortConfig.key === 'amount' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-                  </th>
-                  <th>Unit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedImpacts.map((impact, i) => (
-                  <tr key={i}>
-                    <td className="category-name">{impact.category}</td>
-                    <td className="impact-value">{impact.amount.toExponential(3)}</td>
-                    <td className="impact-unit">{impact.unit}</td>
+            {showImpacts && (
+              <table className="impact-table">
+                <thead>
+                  <tr>
+                    <th onClick={() => handleSort('category')} className="sortable">
+                      Category {sortConfig.key === 'category' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                    </th>
+                    <th onClick={() => handleSort('amount')} className="sortable">
+                      Amount {sortConfig.key === 'amount' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                    </th>
+                    <th>Unit</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {sortedImpacts.map((impact, i) => (
+                    <tr key={i}>
+                      <td className="category-name">{impact.category}</td>
+                      <td className="impact-value">{impact.amount.toExponential(3)}</td>
+                      <td className="impact-unit">{impact.unit}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         ) : (
           <div className="no-impacts">
@@ -311,13 +316,23 @@ function ResultsPanel({ results }) {
           <div className="process-diagram-container">
             <div className="diagram-header">
               <h3>Product System Diagram</h3>
-              <span className="diagram-stats">
-                {result.diagram.metadata.total_processes} processes, {result.diagram.metadata.total_links} links
-              </span>
+              <div className="diagram-header-right">
+                <span className="diagram-stats">
+                  {result.diagram.metadata.total_processes} processes, {result.diagram.metadata.total_links} links
+                </span>
+                <button
+                  className="toggle-details"
+                  onClick={() => setShowDiagram(!showDiagram)}
+                >
+                  {showDiagram ? 'Hide Details' : 'Show Details'}
+                </button>
+              </div>
             </div>
-            <div className="ascii-diagram">
-              <pre>{buildASCIITree(result.diagram)}</pre>
-            </div>
+            {showDiagram && (
+              <div className="ascii-diagram">
+                <pre>{buildASCIITree(result.diagram)}</pre>
+              </div>
+            )}
           </div>
         )}
       </div>

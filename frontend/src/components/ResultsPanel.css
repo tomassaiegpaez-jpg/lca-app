@@ -105,23 +105,9 @@
 
 .result-header h2 {
   color: #212529;
-  margin-bottom: 0.75rem;
+  margin: 0;
   font-size: 1.5rem;
   font-weight: 700;
-}
-
-.result-meta {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
-.result-meta span {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
 }
 
 /* Warning Box */
@@ -327,6 +313,12 @@
   color: #495057;
   font-size: 1.1rem;
   font-weight: 600;
+}
+
+.diagram-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .diagram-stats {
