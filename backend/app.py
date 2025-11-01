@@ -70,6 +70,52 @@ class ChatMessage(BaseModel):
     message: str
     conversation_id: Optional[str] = None
 
+# ISO 14040/14044 Goal & Scope Models
+class FunctionalUnitModel(BaseModel):
+    """ISO 14044 Section 4.2.3.2 - Functional Unit"""
+    description: str
+    quantified_performance: str
+    reference_flow: str
+    amount: float
+    unit: str
+
+class SystemBoundaryModel(BaseModel):
+    """ISO 14044 Section 4.2.3.3 - System Boundary"""
+    description: str
+    cut_off_criteria: str
+    included_processes: List[str]
+    excluded_processes: List[str]
+
+class DataQualityModel(BaseModel):
+    """ISO 14044 Section 4.2.3.6 - Data Quality"""
+    temporal_coverage: str
+    geographical_coverage: str
+    technological_coverage: str
+    precision: str
+    completeness: str
+    representativeness: str
+    consistency: str
+    reproducibility: str
+    data_sources: List[str]
+    uncertainty_assessment: Optional[str] = None
+
+class GoalAndScopeModel(BaseModel):
+    """ISO 14044 Section 4.2 - Goal and Scope Definition"""
+    study_id: str
+    created_at: str
+    updated_at: str
+    study_goal: str
+    reasons_for_study: str
+    intended_audience: str
+    comparative_assertion: bool = False
+    functional_unit: FunctionalUnitModel
+    system_boundary: SystemBoundaryModel
+    data_quality_requirements: DataQualityModel
+    assumptions: List[str]
+    limitations: List[str]
+    allocation_rules: List[str]
+    impact_method: str
+
 @app.get("/")
 async def root():
     """Health check endpoint"""
@@ -339,6 +385,137 @@ async def calculate_lcia(request: LCIARequest):
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# ISO 14040/14044 Goal & Scope Endpoints
+# ============================================================================
+
+@app.post("/api/goal-scope")
+async def create_goal_scope(goal_scope: GoalAndScopeModel):
+    """
+    Create or update Goal and Scope definition for an LCA study
+
+    ISO 14044:2006 Section 4.2 - The goal and scope of an LCA shall be
+    clearly defined and shall be consistent with the intended application.
+
+    Args:
+        goal_scope: Complete Goal and Scope definition
+
+    Returns:
+        study_id of the created/updated study
+    """
+    from services.openlca_service import get_openlca_service, FunctionalUnit, SystemBoundary, DataQuality, GoalAndScope
+    from datetime import datetime
+
+    try:
+        service = get_openlca_service()
+
+        # Convert Pydantic models to dataclasses
+        functional_unit = FunctionalUnit(
+            description=goal_scope.functional_unit.description,
+            quantified_performance=goal_scope.functional_unit.quantified_performance,
+            reference_flow=goal_scope.functional_unit.reference_flow,
+            amount=goal_scope.functional_unit.amount,
+            unit=goal_scope.functional_unit.unit
+        )
+
+        system_boundary = SystemBoundary(
+            description=goal_scope.system_boundary.description,
+            cut_off_criteria=goal_scope.system_boundary.cut_off_criteria,
+            included_processes=goal_scope.system_boundary.included_processes,
+            excluded_processes=goal_scope.system_boundary.excluded_processes
+        )
+
+        data_quality = DataQuality(
+            temporal_coverage=goal_scope.data_quality_requirements.temporal_coverage,
+            geographical_coverage=goal_scope.data_quality_requirements.geographical_coverage,
+            technological_coverage=goal_scope.data_quality_requirements.technological_coverage,
+            precision=goal_scope.data_quality_requirements.precision,
+            completeness=goal_scope.data_quality_requirements.completeness,
+            representativeness=goal_scope.data_quality_requirements.representativeness,
+            consistency=goal_scope.data_quality_requirements.consistency,
+            reproducibility=goal_scope.data_quality_requirements.reproducibility,
+            data_sources=goal_scope.data_quality_requirements.data_sources,
+            uncertainty_assessment=goal_scope.data_quality_requirements.uncertainty_assessment
+        )
+
+        # Create GoalAndScope dataclass
+        goal_and_scope = GoalAndScope(
+            study_id=goal_scope.study_id,
+            created_at=goal_scope.created_at if goal_scope.created_at else datetime.now().isoformat(),
+            updated_at=datetime.now().isoformat(),
+            study_goal=goal_scope.study_goal,
+            reasons_for_study=goal_scope.reasons_for_study,
+            intended_audience=goal_scope.intended_audience,
+            comparative_assertion=goal_scope.comparative_assertion,
+            functional_unit=functional_unit,
+            system_boundary=system_boundary,
+            data_quality_requirements=data_quality,
+            assumptions=goal_scope.assumptions,
+            limitations=goal_scope.limitations,
+            allocation_rules=goal_scope.allocation_rules,
+            impact_method=goal_scope.impact_method
+        )
+
+        # Save to storage
+        study_id = service.save_goal_and_scope(goal_and_scope)
+
+        return {
+            "success": True,
+            "study_id": study_id,
+            "message": "Goal and Scope definition saved successfully"
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/goal-scope/{study_id}")
+async def get_goal_scope(study_id: str):
+    """
+    Retrieve Goal and Scope definition by study ID
+
+    Args:
+        study_id: Unique identifier for the study
+
+    Returns:
+        Complete Goal and Scope definition
+    """
+    from services.openlca_service import get_openlca_service
+
+    try:
+        service = get_openlca_service()
+        goal_scope = service.get_goal_and_scope(study_id)
+
+        if goal_scope is None:
+            raise HTTPException(status_code=404, detail=f"Study {study_id} not found")
+
+        return goal_scope.to_dict()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/goal-scope")
+async def list_studies():
+    """
+    List all available LCA studies
+
+    Returns:
+        List of study summaries (study_id, study_goal, created_at, updated_at)
+    """
+    from services.openlca_service import get_openlca_service
+
+    try:
+        service = get_openlca_service()
+        studies = service.list_studies()
+        return studies
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # ============================================================================
 # Conversational LCA Assistant
