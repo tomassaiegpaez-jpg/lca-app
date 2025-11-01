@@ -1,16 +1,13 @@
 import { useState } from 'react'
 import ChatPanel from './components/ChatPanel'
 import ResultsPanel from './components/ResultsPanel'
-import GoalScopeForm from './components/GoalScopeForm'
 import './App.css'
 
 function App() {
   const [messages, setMessages] = useState([])
   const [conversationId, setConversationId] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [lciaResults, setLciaResults] = useState([]) // Array of LCIA results
-  const [showGoalScopeForm, setShowGoalScopeForm] = useState(false)
-  const [currentGoalScope, setCurrentGoalScope] = useState(null)
+  const [lciaResults, setLciaResults] = useState([]) // Array of LCIA results with Goal & Scope
 
   const handleSendMessage = async (userMessage) => {
     setLoading(true)
@@ -49,12 +46,13 @@ function App() {
         action: data.action
       }])
 
-      // If LCIA calculation was successful, add to results panel
+      // If LCIA calculation was successful, add to results panel with Goal & Scope
       if (data.action && data.action.results &&
           (data.action.type === 'calculate_lcia' || data.action.type === 'calculate_lcia_ps')) {
         setLciaResults(prev => [...prev, {
           ...data.action.results,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          goal_scope: data.action.results.goal_scope || null // AI-inferred Goal & Scope
         }])
       }
 
@@ -69,31 +67,11 @@ function App() {
     }
   }
 
-  const handleOpenGoalScope = () => {
-    setShowGoalScopeForm(true)
-  }
-
-  const handleSaveGoalScope = (goalScopeData) => {
-    setCurrentGoalScope(goalScopeData)
-    setShowGoalScopeForm(false)
-  }
-
-  const handleCancelGoalScope = () => {
-    setShowGoalScopeForm(false)
-  }
-
   return (
     <div className="app">
       <header className="app-header">
-        <div className="header-content">
-          <div>
-            <h1>LCA Assistant</h1>
-            <p>Life Cycle Assessment powered by OpenLCA & Claude AI</p>
-          </div>
-          <button onClick={handleOpenGoalScope} className="btn-define-goal">
-            Define Goal & Scope
-          </button>
-        </div>
+        <h1>LCA Assistant</h1>
+        <p>Life Cycle Assessment powered by OpenLCA & Claude AI</p>
       </header>
 
       <div className="app-layout">
@@ -102,16 +80,8 @@ function App() {
           loading={loading}
           onSendMessage={handleSendMessage}
         />
-        <ResultsPanel results={lciaResults} goalScope={currentGoalScope} />
+        <ResultsPanel results={lciaResults} />
       </div>
-
-      {showGoalScopeForm && (
-        <GoalScopeForm
-          onSave={handleSaveGoalScope}
-          onCancel={handleCancelGoalScope}
-          initialData={currentGoalScope}
-        />
-      )}
     </div>
   )
 }

@@ -1,31 +1,53 @@
 import { useState } from 'react'
 import './ResultsPanel.css'
 
-function ResultsPanel({ results, goalScope }) {
+function ResultsPanel({ results }) {
   const [activeTab, setActiveTab] = useState(0)
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
   const [showGoalScope, setShowGoalScope] = useState(false)
 
-  // Render goal and scope summary
-  const renderGoalScopeSummary = () => {
-    if (!goalScope) return null
+  // Render goal and scope summary - always shown, AI-inferred
+  const renderGoalScopeSummary = (goalScope) => {
+    if (!goalScope) {
+      return (
+        <div className="goal-scope-summary incomplete">
+          <div className="goal-scope-header">
+            <h3>ISO 14044 Goal & Scope Definition</h3>
+            <span className="compliance-badge incomplete">⚠️ Incomplete</span>
+          </div>
+          <p className="goal-scope-note">Goal & Scope was not fully inferred from the analysis. Some ISO 14044 elements may be missing.</p>
+        </div>
+      )
+    }
+
+    const compliance = goalScope.iso_compliance || {}
 
     return (
       <div className="goal-scope-summary">
         <div className="goal-scope-header">
           <h3>ISO 14044 Goal & Scope Definition</h3>
-          <button
-            className="toggle-details"
-            onClick={() => setShowGoalScope(!showGoalScope)}
-          >
-            {showGoalScope ? 'Hide Details' : 'Show Details'}
-          </button>
+          <div className="goal-scope-controls">
+            {compliance.level && (
+              <span className={`compliance-badge ${compliance.level}`}>
+                {compliance.level === 'high' && '✅ High Compliance'}
+                {compliance.level === 'medium' && '⚠️ Partial Compliance'}
+                {compliance.level === 'low' && '❌ Low Compliance'}
+              </span>
+            )}
+            <button
+              className="toggle-details"
+              onClick={() => setShowGoalScope(!showGoalScope)}
+            >
+              {showGoalScope ? 'Hide Details' : 'Show Details'}
+            </button>
+          </div>
         </div>
 
         <div className="goal-scope-brief">
-          <p><strong>Study Goal:</strong> {goalScope.study_goal}</p>
-          <p><strong>Functional Unit:</strong> {goalScope.functional_unit.description}</p>
-          <p><strong>Impact Method:</strong> {goalScope.impact_method}</p>
+          <p><strong>Study Goal:</strong> {goalScope.study_goal || 'Not specified'}</p>
+          <p><strong>Functional Unit:</strong> {goalScope.functional_unit?.description || 'Not specified'}</p>
+          <p><strong>Impact Method:</strong> {goalScope.impact_method || 'Not specified'}</p>
+          {goalScope.inferred && <p className="inferred-note">ℹ️ <em>This Goal & Scope was automatically inferred from your request</em></p>}
         </div>
 
         {showGoalScope && (
@@ -238,8 +260,8 @@ function ResultsPanel({ results, goalScope }) {
 
     return (
       <div className="result-view" key={index}>
-        {/* Goal & Scope Summary */}
-        {renderGoalScopeSummary()}
+        {/* Goal & Scope Summary - Always shown, AI-inferred */}
+        {renderGoalScopeSummary(result.goal_scope)}
 
         {/* Functional Unit Header */}
         <div className="functional-unit-header">
