@@ -666,6 +666,7 @@ CRITICAL: ONE ACTION PER MESSAGE
 - You can only issue ONE ACTION command per message
 - NEVER describe specific impact numbers (like "23.6 kg CO2-eq") in the same message as a calculation ACTION
 - Action results are appended to conversation history as [Action Results: ...]
+- NEVER repeat or include [Action Results: ...] text in your responses - this is internal only
 - In your NEXT message, you can interpret the results you see in history
 
 EXAMPLE CORRECT INTERACTION:
@@ -762,6 +763,12 @@ REMEMBER (CRITICAL):
         # Check if assistant wants to perform an action
         action_data = None
         display_message = assistant_message  # Message to display to user
+
+        # Safety: Remove any [Action Results: ...] blocks that AI might have copied from history
+        # These blocks start with [Action Results: and end with }] followed by whitespace
+        import re
+        display_message = re.sub(r'\[Action Results:.*?\}\]\s*', '', display_message, flags=re.DOTALL)
+        display_message = display_message.strip()
 
         if "ACTION:" in assistant_message:
             # Extract and parse action
