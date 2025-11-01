@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+anthropic
+olca-ipc
+pydantic
+python-dotenv
+sqlalchemy
+pytest
