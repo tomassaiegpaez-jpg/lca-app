@@ -1,9 +1,126 @@
 import { useState } from 'react'
 import './ResultsPanel.css'
 
-function ResultsPanel({ results }) {
+function ResultsPanel({ results, goalScope }) {
   const [activeTab, setActiveTab] = useState(0)
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+  const [showGoalScope, setShowGoalScope] = useState(false)
+
+  // Render goal and scope summary
+  const renderGoalScopeSummary = () => {
+    if (!goalScope) return null
+
+    return (
+      <div className="goal-scope-summary">
+        <div className="goal-scope-header">
+          <h3>ISO 14044 Goal & Scope Definition</h3>
+          <button
+            className="toggle-details"
+            onClick={() => setShowGoalScope(!showGoalScope)}
+          >
+            {showGoalScope ? 'Hide Details' : 'Show Details'}
+          </button>
+        </div>
+
+        <div className="goal-scope-brief">
+          <p><strong>Study Goal:</strong> {goalScope.study_goal}</p>
+          <p><strong>Functional Unit:</strong> {goalScope.functional_unit.description}</p>
+          <p><strong>Impact Method:</strong> {goalScope.impact_method}</p>
+        </div>
+
+        {showGoalScope && (
+          <div className="goal-scope-details">
+            <div className="detail-section">
+              <h4>Study Information</h4>
+              <p><strong>Reasons:</strong> {goalScope.reasons_for_study}</p>
+              <p><strong>Intended Audience:</strong> {goalScope.intended_audience}</p>
+              <p><strong>Comparative Assertion:</strong> {goalScope.comparative_assertion ? 'Yes' : 'No'}</p>
+            </div>
+
+            <div className="detail-section">
+              <h4>Functional Unit (ISO 14044 Section 4.2.3.2)</h4>
+              <p><strong>Description:</strong> {goalScope.functional_unit.description}</p>
+              <p><strong>Quantified Performance:</strong> {goalScope.functional_unit.quantified_performance}</p>
+              <p><strong>Reference Flow:</strong> {goalScope.functional_unit.reference_flow} - {goalScope.functional_unit.amount} {goalScope.functional_unit.unit}</p>
+            </div>
+
+            <div className="detail-section">
+              <h4>System Boundary (ISO 14044 Section 4.2.3.3)</h4>
+              <p><strong>Description:</strong> {goalScope.system_boundary.description}</p>
+              <p><strong>Cut-off Criteria:</strong> {goalScope.system_boundary.cut_off_criteria}</p>
+              {goalScope.system_boundary.included_processes.length > 0 && (
+                <div>
+                  <strong>Included Processes:</strong>
+                  <ul>
+                    {goalScope.system_boundary.included_processes.map((proc, i) => (
+                      <li key={i}>{proc}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {goalScope.system_boundary.excluded_processes.length > 0 && (
+                <div>
+                  <strong>Excluded Processes:</strong>
+                  <ul>
+                    {goalScope.system_boundary.excluded_processes.map((proc, i) => (
+                      <li key={i}>{proc}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <div className="detail-section">
+              <h4>Data Quality Requirements (ISO 14044 Section 4.2.3.6)</h4>
+              <div className="quality-grid">
+                <div><strong>Temporal:</strong> {goalScope.data_quality_requirements.temporal_coverage}</div>
+                <div><strong>Geographical:</strong> {goalScope.data_quality_requirements.geographical_coverage}</div>
+                <div><strong>Technological:</strong> {goalScope.data_quality_requirements.technological_coverage}</div>
+                <div><strong>Precision:</strong> {goalScope.data_quality_requirements.precision}</div>
+                <div><strong>Completeness:</strong> {goalScope.data_quality_requirements.completeness}</div>
+                <div><strong>Representativeness:</strong> {goalScope.data_quality_requirements.representativeness}</div>
+                <div><strong>Consistency:</strong> {goalScope.data_quality_requirements.consistency}</div>
+                <div><strong>Reproducibility:</strong> {goalScope.data_quality_requirements.reproducibility}</div>
+              </div>
+            </div>
+
+            {goalScope.assumptions.length > 0 && (
+              <div className="detail-section">
+                <h4>Assumptions</h4>
+                <ul>
+                  {goalScope.assumptions.map((assumption, i) => (
+                    <li key={i}>{assumption}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {goalScope.limitations.length > 0 && (
+              <div className="detail-section">
+                <h4>Limitations</h4>
+                <ul>
+                  {goalScope.limitations.map((limitation, i) => (
+                    <li key={i}>{limitation}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {goalScope.allocation_rules.length > 0 && (
+              <div className="detail-section">
+                <h4>Allocation Rules</h4>
+                <ul>
+                  {goalScope.allocation_rules.map((rule, i) => (
+                    <li key={i}>{rule}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   // Build ASCII tree diagram from process network data
   const buildASCIITree = (diagramData) => {
@@ -121,6 +238,9 @@ function ResultsPanel({ results }) {
 
     return (
       <div className="result-view" key={index}>
+        {/* Goal & Scope Summary */}
+        {renderGoalScopeSummary()}
+
         {/* Functional Unit Header */}
         <div className="functional-unit-header">
           <h2>{result.product_system || `Process ${result.process_id?.substring(0, 8)}`}</h2>
