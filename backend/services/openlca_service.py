@@ -958,6 +958,143 @@ class OpenLCAService:
             logging.error(f"Failed to list studies: {e}")
             return []
 
+    def construct_inferred_goal_scope(self,
+                                      user_query: str,
+                                      process_or_ps_name: str,
+                                      amount: float,
+                                      impact_method: str,
+                                      calculation_type: str = "process") -> Dict[str, Any]:
+        """
+        Construct an AI-inferred Goal & Scope from calculation parameters
+
+        This creates a simplified Goal & Scope that meets basic ISO 14044 requirements
+        but flags what has been inferred vs. what would need user input for full compliance.
+
+        Args:
+            user_query: Original user request
+            process_or_ps_name: Name of process or product system being calculated
+            amount: Functional unit amount
+            impact_method: LCIA method name
+            calculation_type: "process" or "product_system"
+
+        Returns:
+            Dictionary with goal_scope and iso_compliance info
+        """
+        now = datetime.now().isoformat()
+
+        # Infer functional unit from process name and amount
+        functional_unit_desc = f"{amount} unit(s) of {process_or_ps_name}"
+
+        # Determine data quality from database
+        data_quality = {
+            "temporal_coverage": "Database dependent (ELCD: varies by process)",
+            "geographical_coverage": "Database dependent (ELCD: European focus)",
+            "technological_coverage": "Current technology represented in database",
+            "precision": "Database values (no uncertainty data)",
+            "completeness": "Database completeness varies by process",
+            "representativeness": "Representative of database processes",
+            "consistency": "Consistent with database methodology",
+            "reproducibility": "Reproducible with same database and settings",
+            "data_sources": ["ELCD Database"],
+            "uncertainty_assessment": None
+        }
+
+        # System boundary based on calculation type
+        if calculation_type == "product_system":
+            boundary_desc = "Cradle-to-gate analysis including all linked upstream processes in the product system"
+            included = ["All processes in product system network"]
+            excluded = ["End-of-life", "Use phase", "Processes below cut-off threshold"]
+        else:
+            boundary_desc = "Single process analysis - may not include full supply chain"
+            included = ["Direct process inputs and outputs"]
+            excluded = ["Upstream supply chain", "End-of-life", "Use phase"]
+
+        # Determine compliance level
+        compliance_score = 0
+        missing_elements = []
+
+        # Check what we have vs ISO 14044 requirements
+        # Required elements (Section 4.2.2): study goal, reasons, intended audience
+        compliance_score += 20  # We have basic goal
+        missing_elements.append("Specific reasons for conducting study")
+        missing_elements.append("Intended audience not specified")
+
+        # Functional unit (Section 4.2.3.2): We have basic description
+        compliance_score += 25
+
+        # System boundary (Section 4.2.3.3): We have basic boundary
+        compliance_score += 20
+        missing_elements.append("Specific cut-off criteria not defined")
+
+        # Data quality (Section 4.2.3.6): Partial - database info only
+        compliance_score += 15
+        missing_elements.append("No uncertainty assessment")
+        missing_elements.append("Data quality goals not specified")
+
+        # Other elements: assumptions, limitations
+        compliance_score += 10
+
+        # Determine compliance level
+        if compliance_score >= 80:
+            compliance_level = "high"
+        elif compliance_score >= 50:
+            compliance_level = "medium"
+        else:
+            compliance_level = "low"
+
+        goal_scope = {
+            "study_id": f"inferred_{now}",
+            "created_at": now,
+            "updated_at": now,
+            "study_goal": f"Assess environmental impacts of {process_or_ps_name}",
+            "reasons_for_study": "User-requested impact assessment (inferred)",
+            "intended_audience": "General analysis (not specified)",
+            "functional_unit": {
+                "description": functional_unit_desc,
+                "quantified_performance": f"{amount} unit(s) produced",
+                "reference_flow": process_or_ps_name,
+                "amount": amount,
+                "unit": "unit"
+            },
+            "system_boundary": {
+                "description": boundary_desc,
+                "cut_off_criteria": "Database defaults",
+                "included_processes": included,
+                "excluded_processes": excluded
+            },
+            "data_quality_requirements": data_quality,
+            "assumptions": [
+                "Using database average technology data",
+                "Database allocation rules applied",
+                f"Amount: {amount} unit(s)",
+                "No time-specific or location-specific adaptations"
+            ],
+            "limitations": [
+                "Goal & Scope automatically inferred from calculation request",
+                "May not reflect specific study context or requirements",
+                "Data quality limited to what is available in database",
+                f"{'Single process - does not include full supply chain' if calculation_type == 'process' else 'Product system boundaries determined by database linkages'}"
+            ],
+            "allocation_rules": [
+                "Database allocation rules (typically economic or physical)"
+            ],
+            "impact_method": impact_method,
+            "comparative_assertion": False,
+            "inferred": True,  # Flag that this was AI-generated
+            "user_query": user_query  # Store original query for reference
+        }
+
+        return {
+            "goal_scope": goal_scope,
+            "iso_compliance": {
+                "level": compliance_level,
+                "score": compliance_score,
+                "max_score": 100,
+                "missing_elements": missing_elements,
+                "completeness_percentage": compliance_score
+            }
+        }
+
 
 # Singleton instance
 _service_instance = None

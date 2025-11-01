@@ -763,6 +763,20 @@ REMEMBER:
                             impact_method_id=action_data.get("method_id"),
                             amount=action_data.get("amount", 1.0)
                         )
+
+                        # Construct AI-inferred Goal & Scope
+                        goal_scope_data = openlca_service.construct_inferred_goal_scope(
+                            user_query=chat_message.message,
+                            process_or_ps_name=lcia_results.get("product_system", "Unknown process"),
+                            amount=action_data.get("amount", 1.0),
+                            impact_method=lcia_results.get("impact_method", "Unknown method"),
+                            calculation_type="process"
+                        )
+
+                        # Merge Goal & Scope into results
+                        lcia_results["goal_scope"] = goal_scope_data["goal_scope"]
+                        lcia_results["goal_scope"]["iso_compliance"] = goal_scope_data["iso_compliance"]
+
                         action_data["results"] = lcia_results
 
                     elif action_data["type"] == "calculate_lcia_ps":
@@ -771,6 +785,20 @@ REMEMBER:
                             impact_method_id=action_data.get("method_id"),
                             amount=action_data.get("amount", 1.0)
                         )
+
+                        # Construct AI-inferred Goal & Scope
+                        goal_scope_data = openlca_service.construct_inferred_goal_scope(
+                            user_query=chat_message.message,
+                            process_or_ps_name=lcia_results.get("product_system", "Unknown product system"),
+                            amount=action_data.get("amount", 1.0),
+                            impact_method=lcia_results.get("impact_method", "Unknown method"),
+                            calculation_type="product_system"
+                        )
+
+                        # Merge Goal & Scope into results
+                        lcia_results["goal_scope"] = goal_scope_data["goal_scope"]
+                        lcia_results["goal_scope"]["iso_compliance"] = goal_scope_data["iso_compliance"]
+
                         action_data["results"] = lcia_results
 
                 except Exception as e:
