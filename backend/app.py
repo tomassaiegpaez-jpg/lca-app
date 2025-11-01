@@ -750,124 +750,142 @@ REMEMBER (CRITICAL):
 - Be concise and action-oriented
 - Handle failures gracefully with helpful guidance"""
 
-        # Prepare messages for Claude
-        messages = [
-            {"role": msg["role"], "content": msg["content"]}
-            for msg in conversations[conv_id]
-        ]
+        # Multi-turn loop: Keep calling Claude until workflow completes or max iterations reached
+        # This enables automatic fallback (e.g., product systems → processes)
+        max_iterations = 5
+        final_action_data = None
+        all_messages = []  # Collect all AI messages for potential display
 
-        # Get response from Claude
-        response = claude_service.client.messages.create(
-            model=claude_service.model,
-            max_tokens=2048,
-            system=system_prompt,
-            messages=messages
-        )
+        for iteration in range(max_iterations):
+            # Prepare messages for Claude
+            messages = [
+                {"role": msg["role"], "content": msg["content"]}
+                for msg in conversations[conv_id]
+            ]
 
-        assistant_message = response.content[0].text
+            # Get response from Claude
+            response = claude_service.client.messages.create(
+                model=claude_service.model,
+                max_tokens=2048,
+                system=system_prompt,
+                messages=messages
+            )
 
-        # Check if assistant wants to perform an action
-        action_data = None
-        display_message = assistant_message  # Message to display to user
+            assistant_message = response.content[0].text
+            all_messages.append(assistant_message)
+
+            # Check if assistant wants to perform an action
+            action_data = None
+
+            if "ACTION:" not in assistant_message:
+                # No action in this response - workflow complete
+                break
+
+            # Extract and perform action
+            import re
+            import json
+            action_match = re.search(r'ACTION:\s*({[^}]+})', assistant_message)
+            if not action_match:
+                # No valid action found
+                break
+
+            try:
+                action_data = json.loads(action_match.group(1))
+
+                # Execute action
+                if action_data["type"] == "search_processes":
+                    print(f"Searching processes for: '{action_data['query']}'")
+                    search_results = openlca_service.search_processes(
+                        action_data["query"],
+                        limit=5
+                    )
+                    print(f"Found {len(search_results)} results")
+                    action_data["results"] = search_results
+
+                elif action_data["type"] == "search_product_systems":
+                    search_results = openlca_service.search_product_systems(
+                        action_data["query"],
+                        limit=5
+                    )
+                    action_data["results"] = search_results
+
+                elif action_data["type"] == "calculate_lcia":
+                    lcia_results = openlca_service.calculate_lcia(
+                        action_data["process_id"],
+                        impact_method_id=action_data.get("method_id"),
+                        amount=action_data.get("amount", 1.0)
+                    )
+
+                    # Construct AI-inferred Goal & Scope
+                    goal_scope_data = openlca_service.construct_inferred_goal_scope(
+                        user_query=chat_message.message,
+                        process_or_ps_name=lcia_results.get("product_system", "Unknown process"),
+                        amount=action_data.get("amount", 1.0),
+                        impact_method=lcia_results.get("impact_method", "Unknown method"),
+                        calculation_type="process"
+                    )
+
+                    # Merge Goal & Scope into results
+                    lcia_results["goal_scope"] = goal_scope_data["goal_scope"]
+                    lcia_results["goal_scope"]["iso_compliance"] = goal_scope_data["iso_compliance"]
+
+                    action_data["results"] = lcia_results
+                    final_action_data = action_data  # Save for return
+
+                elif action_data["type"] == "calculate_lcia_ps":
+                    lcia_results = openlca_service.calculate_lcia_from_product_system(
+                        action_data["product_system_id"],
+                        impact_method_id=action_data.get("method_id"),
+                        amount=action_data.get("amount", 1.0)
+                    )
+
+                    # Construct AI-inferred Goal & Scope
+                    goal_scope_data = openlca_service.construct_inferred_goal_scope(
+                        user_query=chat_message.message,
+                        process_or_ps_name=lcia_results.get("product_system", "Unknown product system"),
+                        amount=action_data.get("amount", 1.0),
+                        impact_method=lcia_results.get("impact_method", "Unknown method"),
+                        calculation_type="product_system"
+                    )
+
+                    # Merge Goal & Scope into results
+                    lcia_results["goal_scope"] = goal_scope_data["goal_scope"]
+                    lcia_results["goal_scope"]["iso_compliance"] = goal_scope_data["iso_compliance"]
+
+                    action_data["results"] = lcia_results
+                    final_action_data = action_data  # Save for return
+
+            except Exception as e:
+                action_data = {"error": str(e)}
+                final_action_data = action_data
+
+            # Add this turn to conversation history with action results
+            history_content = assistant_message
+            if action_data:
+                history_content += f"\n\n[Action Results: {json.dumps(action_data, default=str)}]"
+
+            conversations[conv_id].append({
+                "role": "assistant",
+                "content": history_content
+            })
+
+            # Break conditions: stop loop if calculation complete or error occurred
+            if action_data and (action_data.get("type") in ["calculate_lcia", "calculate_lcia_ps"] or "error" in action_data):
+                break
+
+        # Prepare display message: use last assistant message, cleaned
+        display_message = all_messages[-1] if all_messages else ""
 
         # Safety: Remove any [Action Results: ...] blocks that AI might have copied from history
-        # These blocks start with [Action Results: and end with }] followed by whitespace
-        import re
         display_message = re.sub(r'\[Action Results:.*?\}\]\s*', '', display_message, flags=re.DOTALL)
+        # Remove ACTION commands from display
+        display_message = re.sub(r'\n*ACTION:\s*{[^}]+}\s*', '', display_message)
         display_message = display_message.strip()
-
-        if "ACTION:" in assistant_message:
-            # Extract and parse action
-            import json
-            import re
-            action_match = re.search(r'ACTION:\s*({[^}]+})', assistant_message)
-            if action_match:
-                # Strip ACTION text from display message
-                display_message = re.sub(r'\n*ACTION:\s*{[^}]+}\s*', '', assistant_message).strip()
-
-                try:
-                    action_data = json.loads(action_match.group(1))
-
-                    # Execute action
-                    if action_data["type"] == "search_processes":
-                        print(f"Searching processes for: '{action_data['query']}'")
-                        search_results = openlca_service.search_processes(
-                            action_data["query"],
-                            limit=5
-                        )
-                        print(f"Found {len(search_results)} results")
-                        action_data["results"] = search_results
-
-                    elif action_data["type"] == "search_product_systems":
-                        search_results = openlca_service.search_product_systems(
-                            action_data["query"],
-                            limit=5
-                        )
-                        action_data["results"] = search_results
-
-                    elif action_data["type"] == "calculate_lcia":
-                        lcia_results = openlca_service.calculate_lcia(
-                            action_data["process_id"],
-                            impact_method_id=action_data.get("method_id"),
-                            amount=action_data.get("amount", 1.0)
-                        )
-
-                        # Construct AI-inferred Goal & Scope
-                        goal_scope_data = openlca_service.construct_inferred_goal_scope(
-                            user_query=chat_message.message,
-                            process_or_ps_name=lcia_results.get("product_system", "Unknown process"),
-                            amount=action_data.get("amount", 1.0),
-                            impact_method=lcia_results.get("impact_method", "Unknown method"),
-                            calculation_type="process"
-                        )
-
-                        # Merge Goal & Scope into results
-                        lcia_results["goal_scope"] = goal_scope_data["goal_scope"]
-                        lcia_results["goal_scope"]["iso_compliance"] = goal_scope_data["iso_compliance"]
-
-                        action_data["results"] = lcia_results
-
-                    elif action_data["type"] == "calculate_lcia_ps":
-                        lcia_results = openlca_service.calculate_lcia_from_product_system(
-                            action_data["product_system_id"],
-                            impact_method_id=action_data.get("method_id"),
-                            amount=action_data.get("amount", 1.0)
-                        )
-
-                        # Construct AI-inferred Goal & Scope
-                        goal_scope_data = openlca_service.construct_inferred_goal_scope(
-                            user_query=chat_message.message,
-                            process_or_ps_name=lcia_results.get("product_system", "Unknown product system"),
-                            amount=action_data.get("amount", 1.0),
-                            impact_method=lcia_results.get("impact_method", "Unknown method"),
-                            calculation_type="product_system"
-                        )
-
-                        # Merge Goal & Scope into results
-                        lcia_results["goal_scope"] = goal_scope_data["goal_scope"]
-                        lcia_results["goal_scope"]["iso_compliance"] = goal_scope_data["iso_compliance"]
-
-                        action_data["results"] = lcia_results
-
-                except Exception as e:
-                    action_data = {"error": str(e)}
-
-        # Add assistant response to history WITH action results so Claude can reference them
-        history_content = assistant_message
-        if action_data:
-            # Append action results to history for context in next turn
-            import json
-            history_content += f"\n\n[Action Results: {json.dumps(action_data, default=str)}]"
-
-        conversations[conv_id].append({
-            "role": "assistant",
-            "content": history_content
-        })
 
         return {
             "conversation_id": conv_id,
             "message": display_message,  # Send cleaned message to user
-            "action": action_data
+            "action": final_action_data
         }
 
     except Exception as e:
