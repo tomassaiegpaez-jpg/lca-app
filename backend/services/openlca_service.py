@@ -18,8 +18,104 @@ import olca_schema as o
 from olca_schema import RefType
 from typing import List, Optional, Dict, Any
 from dotenv import load_dotenv
+from dataclasses import dataclass, asdict
+from datetime import datetime
+import json
+from pathlib import Path
 
 load_dotenv('../.env')
+
+# ISO 14040/14044 Compliant Data Structures
+
+@dataclass
+class FunctionalUnit:
+    """
+    ISO 14044:2006 Section 4.2.3.2 - Functional Unit Definition
+
+    The functional unit defines the quantification of the identified functions (performance
+    characteristics) of the product system. It provides a reference to which the inputs and
+    outputs are related.
+    """
+    description: str  # e.g., "Production and delivery of 1 kg of glass fiber composite"
+    quantified_performance: str  # What function does the product provide?
+    reference_flow: str  # The flow that delivers this function
+    amount: float
+    unit: str
+
+@dataclass
+class SystemBoundary:
+    """
+    ISO 14044:2006 Section 4.2.3.3 - System Boundary Definition
+
+    The system boundary determines which unit processes shall be included within the LCA.
+    """
+    description: str  # Description of what is included/excluded
+    cut_off_criteria: str  # Rules for excluding inputs/outputs
+    included_processes: List[str]  # List of included process types
+    excluded_processes: List[str]  # List of excluded processes and rationale
+
+@dataclass
+class DataQuality:
+    """
+    ISO 14044:2006 Section 4.2.3.6 - Data Quality Requirements
+
+    Requirements for data quality shall be specified to enable the goal and scope to be met.
+    """
+    temporal_coverage: str  # Time period of data (e.g., "2020-2023")
+    geographical_coverage: str  # Geographic area (e.g., "European Union")
+    technological_coverage: str  # Technology represented (e.g., "Average European technology")
+    precision: str  # Statistical variation (e.g., "±10%")
+    completeness: str  # % of data collected vs required (e.g., "95%")
+    representativeness: str  # Degree data reflects true population
+    consistency: str  # Applied methodology uniformity
+    reproducibility: str  # Can results be reproduced?
+    data_sources: List[str]  # List of data sources
+    uncertainty_assessment: Optional[str] = None
+
+@dataclass
+class GoalAndScope:
+    """
+    ISO 14044:2006 Section 4.2 - Goal and Scope Definition
+
+    The goal and scope of an LCA shall be clearly defined and shall be consistent with
+    the intended application.
+    """
+    # Study identification
+    study_id: str  # Unique identifier for this study
+    created_at: str  # ISO format timestamp
+    updated_at: str  # ISO format timestamp
+
+    # Goal definition (ISO 14044:2006 Section 4.2.2)
+    study_goal: str  # Intended application
+    reasons_for_study: str  # Why is the study being conducted?
+    intended_audience: str  # To whom are results communicated?
+    comparative_assertion: bool = False  # Will results be used for public comparative assertions?
+
+    # Scope definition (ISO 14044:2006 Section 4.2.3)
+    functional_unit: FunctionalUnit
+    system_boundary: SystemBoundary
+    data_quality_requirements: DataQuality
+
+    # Additional scope elements
+    assumptions: List[str]  # Key assumptions made
+    limitations: List[str]  # Limitations of the study
+    allocation_rules: List[str]  # How co-products are handled
+
+    # Impact assessment method
+    impact_method: str  # LCIA method used (e.g., "ILCD 2011 Midpoint")
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization"""
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'GoalAndScope':
+        """Create from dictionary"""
+        # Convert nested structures
+        data['functional_unit'] = FunctionalUnit(**data['functional_unit'])
+        data['system_boundary'] = SystemBoundary(**data['system_boundary'])
+        data['data_quality_requirements'] = DataQuality(**data['data_quality_requirements'])
+        return cls(**data)
 
 class OpenLCAService:
     """Service class for OpenLCA IPC interactions"""
@@ -761,6 +857,104 @@ class OpenLCAService:
                     "error": str(e)
                 }
             }
+
+    # ========== ISO 14040/14044 Goal & Scope Management ==========
+    # ISO Integration Plan: Phase 1.1 - Goal and Scope Definition System
+
+    def _ensure_studies_dir(self) -> Path:
+        """Ensure the studies directory exists"""
+        studies_dir = Path(__file__).parent.parent / "studies"
+        studies_dir.mkdir(parents=True, exist_ok=True)
+        return studies_dir
+
+    def save_goal_and_scope(self, goal_scope: GoalAndScope) -> str:
+        """
+        Save Goal and Scope definition to JSON file
+
+        ISO 14044:2006 Section 4.2 - Goal and scope shall be clearly defined
+
+        Args:
+            goal_scope: GoalAndScope object to save
+
+        Returns:
+            study_id of the saved study
+        """
+        try:
+            studies_dir = self._ensure_studies_dir()
+
+            # Update timestamp
+            goal_scope.updated_at = datetime.now().isoformat()
+
+            # Save to JSON file
+            file_path = studies_dir / f"{goal_scope.study_id}.json"
+            with open(file_path, 'w') as f:
+                json.dump(goal_scope.to_dict(), f, indent=2)
+
+            logging.info(f"Saved Goal & Scope for study: {goal_scope.study_id}")
+            return goal_scope.study_id
+
+        except Exception as e:
+            logging.error(f"Failed to save Goal & Scope: {e}")
+            raise Exception(f"Failed to save Goal & Scope: {str(e)}")
+
+    def get_goal_and_scope(self, study_id: str) -> Optional[GoalAndScope]:
+        """
+        Retrieve Goal and Scope definition by study ID
+
+        Args:
+            study_id: Unique identifier for the study
+
+        Returns:
+            GoalAndScope object or None if not found
+        """
+        try:
+            studies_dir = self._ensure_studies_dir()
+            file_path = studies_dir / f"{study_id}.json"
+
+            if not file_path.exists():
+                return None
+
+            with open(file_path, 'r') as f:
+                data = json.load(f)
+
+            return GoalAndScope.from_dict(data)
+
+        except Exception as e:
+            logging.error(f"Failed to load Goal & Scope: {e}")
+            return None
+
+    def list_studies(self) -> List[Dict[str, Any]]:
+        """
+        List all available studies
+
+        Returns:
+            List of study summaries (study_id, study_goal, created_at)
+        """
+        try:
+            studies_dir = self._ensure_studies_dir()
+            studies = []
+
+            for file_path in studies_dir.glob("*.json"):
+                try:
+                    with open(file_path, 'r') as f:
+                        data = json.load(f)
+                    studies.append({
+                        "study_id": data.get("study_id"),
+                        "study_goal": data.get("study_goal"),
+                        "created_at": data.get("created_at"),
+                        "updated_at": data.get("updated_at")
+                    })
+                except Exception as e:
+                    logging.warning(f"Skipping invalid study file {file_path}: {e}")
+                    continue
+
+            # Sort by updated_at (most recent first)
+            studies.sort(key=lambda x: x.get("updated_at", ""), reverse=True)
+            return studies
+
+        except Exception as e:
+            logging.error(f"Failed to list studies: {e}")
+            return []
 
 
 # Singleton instance
