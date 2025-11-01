@@ -93,17 +93,21 @@
   min-height: 0;
 }
 
-/* Functional Unit Header */
-.functional-unit-header {
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+/* Result Header - Product System Title at Top */
+.result-header {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
 }
 
-.functional-unit-header h2 {
+.result-header h2 {
   color: #212529;
   margin-bottom: 0.75rem;
   font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .result-meta {
@@ -336,11 +340,12 @@
 
 /* Goal & Scope Summary */
 .goal-scope-summary {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #e7f1ff 0%, #f0e7ff 100%);
-  border: 2px solid #667eea;
+  background: white;
+  border: 1px solid #dee2e6;
   border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .goal-scope-header {
@@ -352,9 +357,9 @@
 
 .goal-scope-header h3 {
   margin: 0;
-  color: #212529;
-  font-size: 1.3rem;
-  font-weight: 700;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .goal-scope-controls {

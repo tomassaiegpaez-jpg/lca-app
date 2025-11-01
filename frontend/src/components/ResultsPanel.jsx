@@ -251,18 +251,18 @@ function ResultsPanel({ results }) {
 
     return (
       <div className="result-view" key={index}>
-        {/* Goal & Scope Summary - Always shown, AI-inferred */}
-        {renderGoalScopeSummary(result.goal_scope)}
-
-        {/* Functional Unit Header */}
-        <div className="functional-unit-header">
+        {/* Product System Title - At the top */}
+        <div className="result-header">
           <h2>{result.product_system || `Process ${result.process_id?.substring(0, 8)}`}</h2>
           <div className="result-meta">
             <span><strong>Method:</strong> {result.impact_method}</span>
-            <span><strong>Functional Unit:</strong> {result.functional_unit_text || `${result.functional_unit} unit(s)`}</span>
+            <span><strong>Functional Unit:</strong> {result.functional_unit_text || `${result.functional_unit} ${result.functional_unit_unit || 'unit(s)'}`}</span>
             <span><strong>Mode:</strong> {result.calculation_mode}</span>
           </div>
         </div>
+
+        {/* Goal & Scope Summary - Always shown, AI-inferred */}
+        {renderGoalScopeSummary(result.goal_scope)}
 
         {/* Warning if present */}
         {result.warning && (

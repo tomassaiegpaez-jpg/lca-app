@@ -958,6 +958,40 @@ class OpenLCAService:
             logging.error(f"Failed to list studies: {e}")
             return []
 
+    def _extract_unit_from_query(self, user_query: str, amount: float) -> str:
+        """
+        Extract unit from user query (e.g., 'kg', 'MJ', 'm3')
+
+        Args:
+            user_query: Original user request
+            amount: Numeric amount extracted
+
+        Returns:
+            Unit string (e.g., 'kg', 'MJ', 'unit')
+        """
+        import re
+
+        # Common LCA units
+        units = [
+            'kg', 'g', 'mg', 'ton', 'tonne', 't',  # Mass
+            'MJ', 'kWh', 'GJ', 'TJ', 'Wh',  # Energy
+            'm3', 'm³', 'L', 'mL', 'l', 'ml',  # Volume
+            'm2', 'm²', 'ha',  # Area
+            'km', 'm', 'cm', 'mm',  # Distance
+            'unit', 'units', 'piece', 'pieces', 'item', 'items'  # Count
+        ]
+
+        # Try to find pattern like "1kg", "2 kg", "1.5 kg"
+        amount_str = str(amount).rstrip('0').rstrip('.')  # Clean up float representation
+        for unit in units:
+            # Pattern: amount followed by optional space and unit
+            pattern = rf'\b{re.escape(amount_str)}\s*{re.escape(unit)}\b'
+            if re.search(pattern, user_query, re.IGNORECASE):
+                return unit
+
+        # Default to 'unit' if no specific unit found
+        return 'unit'
+
     def construct_inferred_goal_scope(self,
                                       user_query: str,
                                       process_or_ps_name: str,
@@ -982,8 +1016,11 @@ class OpenLCAService:
         """
         now = datetime.now().isoformat()
 
+        # Extract unit from user query
+        unit = self._extract_unit_from_query(user_query, amount)
+
         # Infer functional unit from process name and amount
-        functional_unit_desc = f"{amount} unit(s) of {process_or_ps_name}"
+        functional_unit_desc = f"{amount} {unit} of {process_or_ps_name}"
 
         # Determine data quality from database
         data_quality = {
@@ -1051,10 +1088,10 @@ class OpenLCAService:
             "intended_audience": "General analysis (not specified)",
             "functional_unit": {
                 "description": functional_unit_desc,
-                "quantified_performance": f"{amount} unit(s) produced",
+                "quantified_performance": f"{amount} {unit} produced",
                 "reference_flow": process_or_ps_name,
                 "amount": amount,
-                "unit": "unit"
+                "unit": unit
             },
             "system_boundary": {
                 "description": boundary_desc,
@@ -1066,7 +1103,7 @@ class OpenLCAService:
             "assumptions": [
                 "Using database average technology data",
                 "Database allocation rules applied",
-                f"Amount: {amount} unit(s)",
+                f"Amount: {amount} {unit}",
                 "No time-specific or location-specific adaptations"
             ],
             "limitations": [
