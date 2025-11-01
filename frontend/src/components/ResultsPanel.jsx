@@ -22,7 +22,7 @@ function ResultsPanel({ results }) {
     return (
       <div className="goal-scope-summary">
         <div className="goal-scope-header">
-          <h3>ISO 14044 Goal & Scope Definition</h3>
+          <h3>Study Goal & Scope</h3>
           <button
             className="toggle-details"
             onClick={() => setShowGoalScope(!showGoalScope)}
@@ -35,7 +35,7 @@ function ResultsPanel({ results }) {
           <p><strong>Study Goal:</strong> {goalScope.study_goal || 'Not specified'}</p>
           <p><strong>Functional Unit:</strong> {goalScope.functional_unit?.description || 'Not specified'}</p>
           <p><strong>Impact Method:</strong> {goalScope.impact_method || 'Not specified'}</p>
-          {goalScope.inferred && <p className="inferred-note">ℹ️ <em>This Goal & Scope was automatically inferred from your request</em></p>}
+          {goalScope.inferred && <p className="inferred-note">ℹ️ <em>Automatically defined from your request</em></p>}
         </div>
 
         {showGoalScope && (
@@ -48,19 +48,21 @@ function ResultsPanel({ results }) {
             </div>
 
             <div className="detail-section">
-              <h4>Functional Unit (ISO 14044 Section 4.2.3.2)</h4>
+              <h4>Functional Unit</h4>
+              <p className="help-text">What product or service does this study measure?</p>
               <p><strong>Description:</strong> {goalScope.functional_unit.description}</p>
-              <p><strong>Quantified Performance:</strong> {goalScope.functional_unit.quantified_performance}</p>
+              <p><strong>Performance:</strong> {goalScope.functional_unit.quantified_performance}</p>
               <p><strong>Reference Flow:</strong> {goalScope.functional_unit.reference_flow} - {goalScope.functional_unit.amount} {goalScope.functional_unit.unit}</p>
             </div>
 
             <div className="detail-section">
-              <h4>System Boundary (ISO 14044 Section 4.2.3.3)</h4>
+              <h4>System Boundary</h4>
+              <p className="help-text">What's included and excluded from this analysis?</p>
               <p><strong>Description:</strong> {goalScope.system_boundary.description}</p>
               <p><strong>Cut-off Criteria:</strong> {goalScope.system_boundary.cut_off_criteria}</p>
               {goalScope.system_boundary.included_processes.length > 0 && (
                 <div>
-                  <strong>Included Processes:</strong>
+                  <strong>Included:</strong>
                   <ul>
                     {goalScope.system_boundary.included_processes.map((proc, i) => (
                       <li key={i}>{proc}</li>
@@ -70,7 +72,7 @@ function ResultsPanel({ results }) {
               )}
               {goalScope.system_boundary.excluded_processes.length > 0 && (
                 <div>
-                  <strong>Excluded Processes:</strong>
+                  <strong>Excluded:</strong>
                   <ul>
                     {goalScope.system_boundary.excluded_processes.map((proc, i) => (
                       <li key={i}>{proc}</li>
@@ -81,11 +83,12 @@ function ResultsPanel({ results }) {
             </div>
 
             <div className="detail-section">
-              <h4>Data Quality Requirements (ISO 14044 Section 4.2.3.6)</h4>
+              <h4>Data Quality</h4>
+              <p className="help-text">How reliable is the underlying data?</p>
               <div className="quality-grid">
-                <div><strong>Temporal:</strong> {goalScope.data_quality_requirements.temporal_coverage}</div>
-                <div><strong>Geographical:</strong> {goalScope.data_quality_requirements.geographical_coverage}</div>
-                <div><strong>Technological:</strong> {goalScope.data_quality_requirements.technological_coverage}</div>
+                <div><strong>Time Period:</strong> {goalScope.data_quality_requirements.temporal_coverage}</div>
+                <div><strong>Geography:</strong> {goalScope.data_quality_requirements.geographical_coverage}</div>
+                <div><strong>Technology:</strong> {goalScope.data_quality_requirements.technological_coverage}</div>
                 <div><strong>Precision:</strong> {goalScope.data_quality_requirements.precision}</div>
                 <div><strong>Completeness:</strong> {goalScope.data_quality_requirements.completeness}</div>
                 <div><strong>Representativeness:</strong> {goalScope.data_quality_requirements.representativeness}</div>

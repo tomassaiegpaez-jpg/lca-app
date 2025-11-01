@@ -481,6 +481,14 @@
   color: #495057;
 }
 
+.detail-section p.help-text {
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
 .detail-section ul {
   margin: 0.5rem 0;
   padding-left: 1.5rem;
