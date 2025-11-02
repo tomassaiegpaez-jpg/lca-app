@@ -8,6 +8,20 @@ function App() {
   const [conversationId, setConversationId] = useState(null)
   const [loading, setLoading] = useState(false)
   const [lciaResults, setLciaResults] = useState([]) // Array of LCIA results with Goal & Scope
+  const [selectedDatabase, setSelectedDatabase] = useState('elcd') // Default to ELCD
+  const [selectedMethod, setSelectedMethod] = useState(null) // LCIA method: null = Auto (AI will choose)
+  const [methodSelectionMode, setMethodSelectionMode] = useState('auto') // 'manual' or 'auto'
+
+  const handleDatabaseChange = (databaseId) => {
+    setSelectedDatabase(databaseId)
+    // Don't reset conversation - backend will track database change in conversation context
+  }
+
+  const handleMethodChange = (methodId) => {
+    setSelectedMethod(methodId)
+    setMethodSelectionMode(methodId === null ? 'auto' : 'manual')
+    // Don't reset conversation when changing method - just affects next calculation
+  }
 
   const handleSendMessage = async (userMessage) => {
     setLoading(true)
@@ -23,7 +37,9 @@ function App() {
         },
         body: JSON.stringify({
           message: userMessage,
-          conversation_id: conversationId
+          conversation_id: conversationId,
+          database_id: selectedDatabase,
+          preferred_method_id: selectedMethod
         })
       })
 
@@ -54,6 +70,11 @@ function App() {
           timestamp: new Date().toISOString(),
           goal_scope: data.action.results.goal_scope || null // AI-inferred Goal & Scope
         }])
+
+        // Update UI to reflect the method that was actually used (only if in auto selection mode)
+        if (data.action.results.used_method_id && methodSelectionMode === 'auto') {
+          setSelectedMethod(data.action.results.used_method_id)
+        }
       }
 
     } catch (error) {
@@ -70,8 +91,12 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>LCA Assistant</h1>
-        <p>Life Cycle Assessment powered by OpenLCA & Claude AI</p>
+        <div className="header-content">
+          <div className="header-text">
+            <h1>LCA Assistant</h1>
+            <p>Life Cycle Assessment powered by OpenLCA & Claude AI</p>
+          </div>
+        </div>
       </header>
 
       <div className="app-layout">
@@ -79,6 +104,12 @@ function App() {
           messages={messages}
           loading={loading}
           onSendMessage={handleSendMessage}
+          selectedDatabase={selectedDatabase}
+          onDatabaseChange={handleDatabaseChange}
+          selectedMethod={selectedMethod}
+          onMethodChange={handleMethodChange}
+          methodSelectionMode={methodSelectionMode}
+          conversationId={conversationId}
         />
         <ResultsPanel results={lciaResults} />
       </div>

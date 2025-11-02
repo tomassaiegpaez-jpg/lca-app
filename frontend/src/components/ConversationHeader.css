@@ -1,0 +1,74 @@
+.conversation-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.75rem 1.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.conversation-context {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.context-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+}
+
+.context-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.context-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mode-indicator {
+  font-size: 1rem;
+  margin-left: 0.25rem;
+}
+
+.mode-indicator.manual {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+}
+
+.mode-indicator.auto {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+}
+
+.conversation-id {
+  margin-left: auto;
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.conversation-id .context-value {
+  font-family: monospace;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.2rem 0.6rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .conversation-context {
+    gap: 1rem;
+  }
+
+  .conversation-id {
+    margin-left: 0;
+  }
+}

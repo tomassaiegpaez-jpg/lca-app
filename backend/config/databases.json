@@ -1,0 +1,103 @@
+{
+  "_instructions": "Configure databases here. Only ELCD is active by default on port 8080. To enable other databases, import them in openLCA and start IPC server on the specified port.",
+
+  "databases": [
+    {
+      "id": "elcd",
+      "name": "ELCD (European)",
+      "host": "172.26.192.1",
+      "port": 8080,
+      "db_type": "free",
+      "description": "European Life Cycle Database - Free, comprehensive EU-focused LCA data",
+      "requires_license": false,
+      "capabilities": ["ReCiPe2016", "ILCD2011", "CML"]
+    },
+    {
+      "id": "agribalyse",
+      "name": "Agribalyse 3.2",
+      "host": "172.26.192.1",
+      "port": 8081,
+      "db_type": "free",
+      "description": "French agricultural and food products database - Free, 2,500+ processes",
+      "requires_license": false,
+      "capabilities": ["ReCiPe2016", "EF3.0", "ILCD2011"]
+    },
+    {
+      "id": "bioenergiedat",
+      "name": "BioEnergieDat",
+      "host": "172.26.192.1",
+      "port": 8082,
+      "db_type": "free",
+      "description": "Bio-energy database - Free, focus on biofuels and biomass",
+      "requires_license": false,
+      "capabilities": ["ReCiPe2016", "CML"]
+    },
+    {
+      "id": "uslci",
+      "name": "USLCI (US LCI)",
+      "host": "172.26.192.1",
+      "port": 8083,
+      "db_type": "free",
+      "description": "US Life Cycle Inventory - Free, US-focused processes",
+      "requires_license": false,
+      "capabilities": ["TRACI", "ReCiPe2016"]
+    },
+    {
+      "id": "needs",
+      "name": "NEEDS",
+      "host": "172.26.192.1",
+      "port": 8084,
+      "db_type": "free",
+      "description": "New Energy Externalities Development for Sustainability - Free European energy database",
+      "requires_license": false,
+      "capabilities": ["ReCiPe2016", "CML"]
+    },
+    {
+      "id": "lca_commons",
+      "name": "LCA Commons 2025.1",
+      "host": "172.26.192.1",
+      "port": 8085,
+      "db_type": "free",
+      "description": "Federal LCA Commons - Free, includes USLCI, Cement & Concrete, Forestry databases",
+      "requires_license": false,
+      "capabilities": ["TRACI", "ReCiPe2016"]
+    }
+  ],
+
+  "_paid_databases": "Uncomment these entries if you have purchased licenses and imported the databases",
+  "_paid_examples": [
+    {
+      "id": "ecoinvent_39",
+      "name": "ecoinvent v3.9",
+      "host": "172.26.192.1",
+      "port": 8091,
+      "db_type": "paid",
+      "description": "ecoinvent v3.9 - Comprehensive global database with 21,000+ processes",
+      "requires_license": true,
+      "license_info": "Commercial license required ($2,000-4,000/year). Visit ecoinvent.org",
+      "capabilities": ["ReCiPe2016", "EF3.0", "TRACI", "CML", "ILCD2011"]
+    },
+    {
+      "id": "ecoinvent_310",
+      "name": "ecoinvent v3.10",
+      "host": "172.26.192.1",
+      "port": 8092,
+      "db_type": "paid",
+      "description": "ecoinvent v3.10 (latest) - Updated processes and impact methods",
+      "requires_license": true,
+      "license_info": "Commercial license required ($2,000-4,000/year). Visit ecoinvent.org",
+      "capabilities": ["ReCiPe2016", "EF3.0", "TRACI", "CML", "ILCD2011"]
+    },
+    {
+      "id": "gabi",
+      "name": "GaBi Professional",
+      "host": "172.26.192.1",
+      "port": 8093,
+      "db_type": "premium",
+      "description": "GaBi Professional Database - 40,000+ industrial processes",
+      "requires_license": true,
+      "license_info": "Enterprise license required ($5,000-15,000/year). Contact Sphera",
+      "capabilities": ["GaBi_2021", "GaBi_CML"]
+    }
+  ]
+}

@@ -97,6 +97,137 @@
   color: #dc3545;
 }
 
+.error-feedback {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+}
+
+/* Mode Switch Banner */
+.mode-switch-banner {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%);
+  border: 2px solid #667eea;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.banner-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.banner-text {
+  flex: 1;
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.switch-mode-btn {
+  align-self: flex-start;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.switch-mode-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.switch-mode-btn:active {
+  transform: translateY(0);
+}
+
+/* Chat Controls: Database and Mode selectors */
+.chat-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.chat-controls .database-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-controls .database-selector label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.chat-controls .database-selector select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.chat-controls .database-selector select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.chat-controls .mode-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-controls .mode-selector label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.chat-controls .mode-selector select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.chat-controls .mode-selector select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
 .input-area {
   padding: 1rem;
   border-top: 1px solid #e0e0e0;

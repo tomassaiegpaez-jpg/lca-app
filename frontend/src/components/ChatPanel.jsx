@@ -1,8 +1,23 @@
 import { useState } from 'react'
+import DatabaseSelector from './DatabaseSelector'
+import MethodSelector from './MethodSelector'
+import ConversationHeader from './ConversationHeader'
 import './ChatPanel.css'
 
-function ChatPanel({ messages, loading, onSendMessage }) {
+function ChatPanel({ messages, loading, onSendMessage, selectedDatabase, onDatabaseChange, selectedMethod, onMethodChange, methodSelectionMode, conversationId }) {
   const [input, setInput] = useState('')
+
+  // Get database name from ID for display
+  const getDatabaseName = (dbId) => {
+    const dbNames = {
+      'elcd': 'ELCD',
+      'ecoinvent': 'ecoinvent',
+      'agribalyse': 'Agribalyse',
+      'uslci': 'USLCI',
+      'lca_commons': 'LCA Commons'
+    }
+    return dbNames[dbId] || dbId
+  }
 
   const handleSend = () => {
     if (!input.trim()) return
@@ -19,6 +34,12 @@ function ChatPanel({ messages, loading, onSendMessage }) {
 
   return (
     <div className="chat-panel">
+      <ConversationHeader
+        database={getDatabaseName(selectedDatabase)}
+        method={selectedMethod ? 'Custom method' : null}
+        methodSelectionMode={methodSelectionMode}
+        conversationId={conversationId}
+      />
       <div className="chat-messages">
         {messages.length === 0 && (
           <div className="welcome-message">
@@ -58,7 +79,7 @@ function ChatPanel({ messages, loading, onSendMessage }) {
             {/* Show LCIA calculation status */}
             {msg.action && (msg.action.type === 'calculate_lcia' || msg.action.type === 'calculate_lcia_ps') && (
               <div className="action-feedback">
-                {msg.action.results ? (
+                {msg.action.results && msg.action.results.impacts && msg.action.results.impacts.length > 0 ? (
                   <>
                     <strong>✓ Calculation complete - Results displayed in panel →</strong>
                     {msg.action.results.warning && (
@@ -69,12 +90,24 @@ function ChatPanel({ messages, loading, onSendMessage }) {
                   </>
                 ) : msg.action.error ? (
                   <span className="error-inline">⚠️ {msg.action.error}</span>
-                ) : null}
+                ) : (
+                  <span className="error-inline">⚠️ Calculation failed - no results returned</span>
+                )}
+              </div>
+            )}
+
+            {/* Show search failure with database suggestions */}
+            {msg.action && msg.action.type === 'search_failed' && (
+              <div className="action-feedback error-feedback">
+                <strong>⚠️ Search Failed</strong>
+                <div style={{marginTop: '0.5rem', whiteSpace: 'pre-line'}}>
+                  {msg.action.error}
+                </div>
               </div>
             )}
 
             {/* Show generic action errors */}
-            {msg.action && msg.action.error && !msg.action.type?.startsWith('calculate') && (
+            {msg.action && msg.action.error && !msg.action.type?.startsWith('calculate') && msg.action.type !== 'search_failed' && (
               <div className="action-feedback">
                 <span className="error-inline">⚠️ {msg.action.error}</span>
               </div>
@@ -87,6 +120,20 @@ function ChatPanel({ messages, loading, onSendMessage }) {
             <div className="message-content">Thinking...</div>
           </div>
         )}
+      </div>
+
+      {/* Chat Controls: Database and Method selectors */}
+      <div className="chat-controls">
+        <DatabaseSelector
+          selectedDatabase={selectedDatabase}
+          onDatabaseChange={onDatabaseChange}
+        />
+
+        <MethodSelector
+          selectedDatabase={selectedDatabase}
+          selectedMethod={selectedMethod}
+          onMethodChange={onMethodChange}
+        />
       </div>
 
       <div className="input-area">

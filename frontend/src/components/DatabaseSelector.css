@@ -1,0 +1,110 @@
+.database-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.database-selector label {
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.database-selector select {
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  background: white;
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 200px;
+}
+
+.database-selector select:hover {
+  border-color: #667eea;
+}
+
+.database-selector select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.database-selector select option:disabled {
+  color: #adb5bd;
+  font-style: italic;
+}
+
+.database-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-indicator {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.status-indicator.online {
+  color: #4ade80;
+}
+
+.status-indicator.offline {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.database-type {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.database-type {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.license-indicator {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.database-selector.loading,
+.database-selector.error {
+  color: #6c757d;
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+}
+
+.database-selector.error {
+  color: #dc3545;
+  background: #f8d7da;
+}
+
+@media (max-width: 768px) {
+  .database-selector {
+    flex-wrap: wrap;
+  }
+
+  .database-info {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .database-selector select {
+    min-width: 150px;
+  }
+}

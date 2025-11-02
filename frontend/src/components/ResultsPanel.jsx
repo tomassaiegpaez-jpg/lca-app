@@ -7,6 +7,7 @@ function ResultsPanel({ results }) {
   const [showGoalScope, setShowGoalScope] = useState(false)
   const [showImpacts, setShowImpacts] = useState(true)
   const [showDiagram, setShowDiagram] = useState(true)
+  const [showLCI, setShowLCI] = useState(false)
 
   // Render goal and scope summary - always shown, AI-inferred
   const renderGoalScopeSummary = (goalScope) => {
@@ -331,6 +332,83 @@ function ResultsPanel({ results }) {
             {showDiagram && (
               <div className="ascii-diagram">
                 <pre>{buildASCIITree(result.diagram)}</pre>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Life Cycle Inventory (LCI) - Below diagram */}
+        {result.inventory && (result.inventory.inputs.length > 0 || result.inventory.outputs.length > 0) && (
+          <div className="lci-container">
+            <div className="lci-header">
+              <h3>Life Cycle Inventory (LCI)</h3>
+              <button
+                className="toggle-details"
+                onClick={() => setShowLCI(!showLCI)}
+              >
+                {showLCI ? 'Hide Details' : 'Show Details'}
+              </button>
+            </div>
+
+            {showLCI && (
+              <div className="lci-content">
+                {/* Inputs Table */}
+                {result.inventory.inputs.length > 0 && (
+                  <div className="lci-section">
+                    <h4>Inputs ({result.inventory.inputs.length})</h4>
+                    <table className="lci-table">
+                      <thead>
+                        <tr>
+                          <th>Flow Name</th>
+                          <th>Amount</th>
+                          <th>Unit</th>
+                          <th>Category</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {result.inventory.inputs.map((flow, idx) => (
+                          <tr key={idx}>
+                            <td>{flow.name}</td>
+                            <td>{typeof flow.amount === 'number' ? flow.amount.toExponential(3) : flow.amount}</td>
+                            <td>{flow.unit}</td>
+                            <td>{flow.category}</td>
+                            <td>{flow.type}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Outputs Table */}
+                {result.inventory.outputs.length > 0 && (
+                  <div className="lci-section">
+                    <h4>Outputs ({result.inventory.outputs.length})</h4>
+                    <table className="lci-table">
+                      <thead>
+                        <tr>
+                          <th>Flow Name</th>
+                          <th>Amount</th>
+                          <th>Unit</th>
+                          <th>Category</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {result.inventory.outputs.map((flow, idx) => (
+                          <tr key={idx}>
+                            <td>{flow.name}</td>
+                            <td>{typeof flow.amount === 'number' ? flow.amount.toExponential(3) : flow.amount}</td>
+                            <td>{flow.unit}</td>
+                            <td>{flow.category}</td>
+                            <td>{flow.type}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -560,21 +560,14 @@ class OpenLCAService:
             ValueError: If process or impact method not found, or product system creation fails
             Exception: For calculation or API errors
         """
-        # Get or find default impact method
+        # Get impact method or use first available
         if impact_method_id is None:
             methods = self.client.get_descriptors(ipc.o.ImpactMethod)
-            recipe_method = next(
-                (m for m in methods if "ReCiPe 2016 Midpoint (H)" in m.name),
-                None
-            )
-            if recipe_method:
-                impact_method_id = recipe_method.id
-            else:
-                # Fallback to first available method
-                impact_method_id = methods[0].id if methods else None
-
-        if not impact_method_id:
-            raise ValueError("No impact method available in database")
+            if not methods:
+                raise ValueError("No impact methods available in database")
+            # Use first available method (method selection should be handled upstream)
+            impact_method_id = methods[0].id
+            logging.warning(f"No method specified, using first available: {methods[0].name}")
 
         # Get or create product system (will raise exception if fails)
         ps_info = self.find_or_create_product_system(process_id)
@@ -616,6 +609,62 @@ class OpenLCAService:
                     "unit": impact.impact_category.ref_unit if hasattr(impact.impact_category, 'ref_unit') else ""
                 })
 
+        # Retrieve Life Cycle Inventory (LCI) data before disposing result
+        inventory = {"inputs": [], "outputs": []}
+        try:
+            # Get all flows from result
+            total_flows = result.get_total_flows()
+
+            # Separate into inputs and outputs
+            if total_flows:
+                for flow_item in total_flows:
+                    try:
+                        if not hasattr(flow_item, 'envi_flow') or not flow_item.envi_flow:
+                            continue
+
+                        envi_flow = flow_item.envi_flow
+                        flow = envi_flow.flow if hasattr(envi_flow, 'flow') else None
+                        if not flow:
+                            continue
+
+                        is_input = envi_flow.is_input if hasattr(envi_flow, 'is_input') else False
+                        amount = flow_item.amount if hasattr(flow_item, 'amount') else 0
+
+                        # Extract flow properties carefully
+                        flow_name = getattr(flow, 'name', str(flow))
+                        flow_unit = getattr(flow, 'ref_unit', '') or getattr(flow, 'reference_unit', '')
+
+                        # Get category
+                        flow_category = "Uncategorized"
+                        if hasattr(flow, 'category') and flow.category:
+                            flow_category = getattr(flow.category, 'name', str(flow.category))
+
+                        # Get flow type
+                        flow_type = getattr(flow, 'flow_type', 'UNKNOWN')
+
+                        flow_data = {
+                            "name": flow_name,
+                            "amount": amount,
+                            "unit": flow_unit,
+                            "category": flow_category,
+                            "type": str(flow_type)
+                        }
+
+                        if is_input:
+                            inventory["inputs"].append(flow_data)
+                        else:
+                            inventory["outputs"].append(flow_data)
+                    except Exception as flow_error:
+                        logging.debug(f"Failed to process flow item: {flow_error}")
+                        continue
+
+            logging.info(f"Retrieved LCI: {len(inventory['inputs'])} inputs, {len(inventory['outputs'])} outputs")
+        except Exception as e:
+            logging.warning(f"Failed to retrieve LCI data: {e}")
+            import traceback
+            traceback.print_exc()
+            # Continue without LCI data - not critical
+
         # Dispose of result to prevent memory leaks
         result.dispose()
 
@@ -638,7 +687,8 @@ class OpenLCAService:
             "functional_unit": amount,
             "functional_unit_text": functional_unit_text,
             "impacts": impact_results,
-            "diagram": diagram_data
+            "diagram": diagram_data,
+            "inventory": inventory
         }
 
         # Add warning if only single process (incomplete supply chain)
@@ -672,21 +722,14 @@ class OpenLCAService:
         """
         import traceback
         try:
-            # Get or find default impact method
+            # Get impact method or use first available
             if impact_method_id is None:
                 methods = self.client.get_descriptors(ipc.o.ImpactMethod)
-                recipe_method = next(
-                    (m for m in methods if "ReCiPe 2016 Midpoint (H)" in m.name),
-                    None
-                )
-                if recipe_method:
-                    impact_method_id = recipe_method.id
-                else:
-                    # Fallback to first available method
-                    impact_method_id = methods[0].id if methods else None
-
-            if not impact_method_id:
-                raise ValueError("No impact method available")
+                if not methods:
+                    raise ValueError("No impact methods available in database")
+                # Use first available method (method selection should be handled upstream)
+                impact_method_id = methods[0].id
+                logging.warning(f"No method specified, using first available: {methods[0].name}")
 
             # Get product system name for response
             product_system = self.client.get(ipc.o.ProductSystem, product_system_id)
@@ -723,6 +766,62 @@ class OpenLCAService:
                         "unit": impact.impact_category.ref_unit if hasattr(impact.impact_category, 'ref_unit') else ""
                     })
 
+            # Retrieve Life Cycle Inventory (LCI) data before disposing result
+            inventory = {"inputs": [], "outputs": []}
+            try:
+                # Get all flows from result
+                total_flows = result.get_total_flows()
+
+                # Separate into inputs and outputs
+                if total_flows:
+                    for flow_item in total_flows:
+                        try:
+                            if not hasattr(flow_item, 'envi_flow') or not flow_item.envi_flow:
+                                continue
+
+                            envi_flow = flow_item.envi_flow
+                            flow = envi_flow.flow if hasattr(envi_flow, 'flow') else None
+                            if not flow:
+                                continue
+
+                            is_input = envi_flow.is_input if hasattr(envi_flow, 'is_input') else False
+                            amount = flow_item.amount if hasattr(flow_item, 'amount') else 0
+
+                            # Extract flow properties carefully
+                            flow_name = getattr(flow, 'name', str(flow))
+                            flow_unit = getattr(flow, 'ref_unit', '') or getattr(flow, 'reference_unit', '')
+
+                            # Get category
+                            flow_category = "Uncategorized"
+                            if hasattr(flow, 'category') and flow.category:
+                                flow_category = getattr(flow.category, 'name', str(flow.category))
+
+                            # Get flow type
+                            flow_type = getattr(flow, 'flow_type', 'UNKNOWN')
+
+                            flow_data = {
+                                "name": flow_name,
+                                "amount": amount,
+                                "unit": flow_unit,
+                                "category": flow_category,
+                                "type": str(flow_type)
+                            }
+
+                            if is_input:
+                                inventory["inputs"].append(flow_data)
+                            else:
+                                inventory["outputs"].append(flow_data)
+                        except Exception as flow_error:
+                            logging.debug(f"Failed to process flow item: {flow_error}")
+                            continue
+
+                logging.info(f"Retrieved LCI: {len(inventory['inputs'])} inputs, {len(inventory['outputs'])} outputs")
+            except Exception as e:
+                logging.warning(f"Failed to retrieve LCI data: {e}")
+                import traceback
+                traceback.print_exc()
+                # Continue without LCI data - not critical
+
             # Dispose of result to prevent memory leaks
             result.dispose()
 
@@ -743,7 +842,8 @@ class OpenLCAService:
                 "functional_unit": amount,
                 "functional_unit_text": functional_unit_text,
                 "impacts": impact_results,
-                "diagram": diagram_data
+                "diagram": diagram_data,
+                "inventory": inventory
             }
 
         except Exception as e:

@@ -1,0 +1,450 @@
+{
+  "databases": {
+    "elcd": {
+      "full_name": "European Reference Life Cycle Database (ELCD)",
+      "region": "Europe",
+      "coverage": "European processes and products",
+      "data_quality": "High - European Commission quality standards",
+      "last_updated": "2015 (core datasets)",
+      "license": "Free and open",
+      "provider": "European Commission - Joint Research Centre",
+      "strengths": [
+        "High quality, validated European data",
+        "Free and openly available",
+        "Good coverage of European industrial processes",
+        "Well-documented with transparent data sources",
+        "Compliant with EU regulations and standards"
+      ],
+      "limitations": [
+        "Limited coverage outside Europe",
+        "Not as comprehensive as ecoinvent",
+        "Less frequent updates than commercial databases",
+        "Fewer processes than commercial alternatives"
+      ],
+      "best_for": [
+        "European environmental assessments",
+        "EU regulatory compliance",
+        "Academic research with limited budgets",
+        "Studies requiring free, open data",
+        "European supply chains"
+      ],
+      "typical_sectors": [
+        "Energy production (European grid)",
+        "Manufacturing (European processes)",
+        "Materials (cement, steel, plastics)",
+        "Transport (European context)",
+        "Waste management"
+      ],
+      "recommended_methods": ["ILCD 2011 Midpoint", "EF 3.0", "ReCiPe 2016 Midpoint (H)"],
+      "data_vintage": "2000-2015",
+      "process_count_estimate": "500-1000"
+    },
+    "ecoinvent": {
+      "full_name": "ecoinvent",
+      "region": "Global",
+      "coverage": "Comprehensive global coverage",
+      "data_quality": "Very High - Industry standard",
+      "last_updated": "2023 (v3.10)",
+      "license": "Commercial - Paid subscription required",
+      "provider": "ecoinvent Association",
+      "strengths": [
+        "Most comprehensive LCA database (19,000+ processes)",
+        "Global coverage with regional variations",
+        "Regular annual updates",
+        "High data quality and transparency",
+        "Industry standard - widely accepted",
+        "Excellent documentation and metadata",
+        "Multiple system models (Allocation, Consequential, Cut-off)"
+      ],
+      "limitations": [
+        "Expensive - requires paid license",
+        "Can be overwhelming due to size and complexity",
+        "Some processes still have data gaps in certain regions",
+        "Learning curve for proper use"
+      ],
+      "best_for": [
+        "Comprehensive global assessments",
+        "Commercial projects with budget",
+        "International supply chains",
+        "Product certification and ecolabels",
+        "Studies requiring high credibility",
+        "Detailed scenario analysis"
+      ],
+      "typical_sectors": [
+        "All sectors comprehensively covered",
+        "Energy and electricity (all regions)",
+        "Agriculture and food",
+        "Chemicals and materials",
+        "Transport and logistics",
+        "Manufacturing and industry",
+        "Construction",
+        "Waste and recycling"
+      ],
+      "recommended_methods": ["ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint", "EF 3.0", "TRACI 2.1"],
+      "data_vintage": "1990-2023",
+      "process_count_estimate": "19,000+"
+    },
+    "agribalyse": {
+      "full_name": "AGRIBALYSE",
+      "region": "France (with some European data)",
+      "coverage": "French agriculture and food products",
+      "data_quality": "High - French government program",
+      "last_updated": "2020 (v3.2)",
+      "license": "Free and open",
+      "provider": "ADEME (French Environment Agency)",
+      "strengths": [
+        "Excellent coverage of agricultural products",
+        "Specifically designed for food LCA",
+        "Free and openly available",
+        "Integrated with French dietary recommendations",
+        "High quality French agricultural data",
+        "Aligned with EU PEF methodology"
+      ],
+      "limitations": [
+        "Primarily French/European focus",
+        "Limited non-agricultural processes",
+        "Not suitable for industrial products",
+        "Smaller database than comprehensive alternatives"
+      ],
+      "best_for": [
+        "Food and beverage products",
+        "Agricultural assessments",
+        "French food supply chains",
+        "Dietary environmental impact studies",
+        "EU PEF studies for food",
+        "Farm-to-fork assessments"
+      ],
+      "typical_sectors": [
+        "Agriculture (crops, livestock)",
+        "Food processing",
+        "Beverages",
+        "Aquaculture and fishing",
+        "Agricultural inputs (fertilizers, feed)"
+      ],
+      "recommended_methods": ["EF 3.0", "ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint"],
+      "data_vintage": "2015-2020",
+      "process_count_estimate": "2,500+"
+    },
+    "uslci": {
+      "full_name": "U.S. Life Cycle Inventory Database",
+      "region": "United States",
+      "coverage": "US processes and materials",
+      "data_quality": "Good - NREL quality standards",
+      "last_updated": "Ongoing - continuous updates",
+      "license": "Free and open (public domain)",
+      "provider": "National Renewable Energy Laboratory (NREL)",
+      "strengths": [
+        "Free US federal database",
+        "Public domain - no restrictions",
+        "Good coverage of US materials and energy",
+        "Maintained by NREL with government support",
+        "Transparent data sources",
+        "Growing coverage over time"
+      ],
+      "limitations": [
+        "Less comprehensive than ecoinvent",
+        "Primarily US-focused",
+        "Some data gaps in certain sectors",
+        "Variable data quality across processes",
+        "Less frequent updates than commercial databases"
+      ],
+      "best_for": [
+        "US environmental assessments",
+        "Federal and state government projects",
+        "US regulatory compliance",
+        "Academic research with US focus",
+        "Construction and building materials (US)",
+        "US energy systems"
+      ],
+      "typical_sectors": [
+        "Construction materials (concrete, steel)",
+        "US electricity grid",
+        "Transportation fuels",
+        "Industrial materials",
+        "Waste management"
+      ],
+      "recommended_methods": ["TRACI 2.1", "ReCiPe 2016 Midpoint (H)"],
+      "data_vintage": "2000-2023",
+      "process_count_estimate": "1,000+"
+    },
+    "lca_commons": {
+      "full_name": "Federal LCA Commons",
+      "region": "United States",
+      "coverage": "US federal data repositories",
+      "data_quality": "Variable - depends on repository",
+      "last_updated": "2025 (latest compilation)",
+      "license": "Free and open (public domain)",
+      "provider": "US Federal Agencies (EPA, NREL, USDA, DOE)",
+      "strengths": [
+        "Aggregates multiple federal databases",
+        "Free and publicly available",
+        "Includes specialized sector databases",
+        "Transparent government data",
+        "Good for public infrastructure",
+        "Continuously expanding"
+      ],
+      "limitations": [
+        "Inconsistent data quality across repositories",
+        "Complex structure with multiple sub-databases",
+        "Requires understanding of different sources",
+        "Limited non-US data",
+        "Variable documentation quality"
+      ],
+      "best_for": [
+        "US federal and state projects",
+        "Public infrastructure assessments",
+        "Agricultural products (USDA data)",
+        "Energy systems (DOE data)",
+        "US environmental policy analysis",
+        "Multi-agency federal studies"
+      ],
+      "typical_sectors": [
+        "Agriculture (USDA data)",
+        "Energy and electricity",
+        "Transportation infrastructure",
+        "Public buildings and construction",
+        "Federal supply chains"
+      ],
+      "recommended_methods": ["TRACI 2.1", "ReCiPe 2016 Midpoint (H)"],
+      "data_vintage": "2000-2025",
+      "process_count_estimate": "2,000+"
+    },
+    "bioenergiedat": {
+      "full_name": "BioEnergieDat",
+      "region": "Germany/Europe",
+      "coverage": "Bioenergy and biomass systems",
+      "data_quality": "High - German research institutions",
+      "last_updated": "Variable",
+      "license": "Free and open",
+      "provider": "German research consortia",
+      "strengths": [
+        "Specialized bioenergy focus",
+        "Detailed German/European bioenergy data",
+        "Free and open",
+        "High quality for specific sector",
+        "Good coverage of biomass supply chains"
+      ],
+      "limitations": [
+        "Narrow sector focus (bioenergy only)",
+        "Limited coverage outside bioenergy",
+        "Primarily German/European context",
+        "Smaller database overall"
+      ],
+      "best_for": [
+        "Bioenergy and biofuel studies",
+        "Biomass assessments",
+        "Renewable energy projects (bio-based)",
+        "German energy transition studies",
+        "Agricultural residue utilization"
+      ],
+      "typical_sectors": [
+        "Bioenergy production",
+        "Biogas and biomethane",
+        "Biofuels",
+        "Biomass supply chains",
+        "Agricultural residues"
+      ],
+      "recommended_methods": ["ILCD 2011 Midpoint", "ReCiPe 2016 Midpoint (H)"],
+      "data_vintage": "2010-2020",
+      "process_count_estimate": "500-1000"
+    },
+    "needs": {
+      "full_name": "NEEDS (New Energy Externalities Developments for Sustainability)",
+      "region": "Europe",
+      "coverage": "European energy systems",
+      "data_quality": "High - EU research project",
+      "last_updated": "2009 (historical)",
+      "license": "Free and open",
+      "provider": "EU Research Consortium",
+      "strengths": [
+        "Detailed European energy data",
+        "Free and open",
+        "Comprehensive for energy sector",
+        "Good for historical comparisons",
+        "Well-documented EU research"
+      ],
+      "limitations": [
+        "Outdated (2009 data)",
+        "Narrow sector focus (energy only)",
+        "Not updated anymore",
+        "Limited modern technologies",
+        "Should be supplemented with newer data"
+      ],
+      "best_for": [
+        "Historical energy comparisons",
+        "European energy assessments (with caution about age)",
+        "Academic research on energy systems",
+        "Validation studies",
+        "Educational purposes"
+      ],
+      "typical_sectors": [
+        "Electricity generation",
+        "European power systems",
+        "Energy externalities",
+        "Fossil and renewable energy"
+      ],
+      "recommended_methods": ["ILCD 2011 Midpoint", "ReCiPe 2016 Midpoint (H)"],
+      "data_vintage": "2000-2009",
+      "process_count_estimate": "500+"
+    }
+  },
+  "selection_guidance": {
+    "by_region": {
+      "Europe": {
+        "primary": "elcd",
+        "alternatives": ["ecoinvent", "agribalyse"],
+        "reasoning": "ELCD provides free, high-quality European data. Agribalyse for food. Ecoinvent for comprehensive coverage with budget."
+      },
+      "United States": {
+        "primary": "uslci",
+        "alternatives": ["lca_commons", "ecoinvent"],
+        "reasoning": "USLCI and LCA Commons provide free US federal data. Ecoinvent for comprehensive coverage with budget."
+      },
+      "France": {
+        "primary": "agribalyse",
+        "alternatives": ["elcd", "ecoinvent"],
+        "reasoning": "Agribalyse for French food products. ELCD for other European processes. Ecoinvent for comprehensive coverage."
+      },
+      "Germany": {
+        "primary": "elcd",
+        "alternatives": ["bioenergiedat", "ecoinvent"],
+        "reasoning": "ELCD for general European data. BioEnergieDat for bioenergy. Ecoinvent for comprehensive coverage."
+      },
+      "Global": {
+        "primary": "ecoinvent",
+        "alternatives": ["elcd", "uslci"],
+        "reasoning": "Ecoinvent is the only truly global comprehensive database. Free alternatives provide regional coverage."
+      },
+      "Other": {
+        "primary": "ecoinvent",
+        "alternatives": ["elcd", "uslci"],
+        "reasoning": "Ecoinvent has best global coverage. Free regional databases can supplement."
+      }
+    },
+    "by_sector": {
+      "Food and Agriculture": {
+        "primary": "agribalyse",
+        "alternatives": ["ecoinvent", "lca_commons"],
+        "reasoning": "Agribalyse designed specifically for food LCA. Ecoinvent for global food. LCA Commons for US agriculture."
+      },
+      "Energy": {
+        "primary": "ecoinvent",
+        "alternatives": ["uslci", "bioenergiedat", "needs"],
+        "reasoning": "Ecoinvent has comprehensive global energy. USLCI for US energy. BioEnergieDat for bioenergy."
+      },
+      "Bioenergy": {
+        "primary": "bioenergiedat",
+        "alternatives": ["ecoinvent", "agribalyse"],
+        "reasoning": "BioEnergieDat specialized for bioenergy. Ecoinvent for broader context. Agribalyse for biomass from agriculture."
+      },
+      "Manufacturing": {
+        "primary": "ecoinvent",
+        "alternatives": ["elcd", "uslci"],
+        "reasoning": "Ecoinvent has comprehensive industrial processes. ELCD for European manufacturing. USLCI for US."
+      },
+      "Construction": {
+        "primary": "ecoinvent",
+        "alternatives": ["uslci", "elcd"],
+        "reasoning": "Ecoinvent comprehensive for construction materials. USLCI excellent for US construction. ELCD for European."
+      },
+      "Transportation": {
+        "primary": "ecoinvent",
+        "alternatives": ["elcd", "uslci"],
+        "reasoning": "Ecoinvent has global transport data. ELCD for European transport. USLCI for US transport."
+      },
+      "Chemicals": {
+        "primary": "ecoinvent",
+        "alternatives": ["elcd"],
+        "reasoning": "Ecoinvent has comprehensive chemical processes. ELCD for European chemicals."
+      },
+      "Consumer Products": {
+        "primary": "ecoinvent",
+        "alternatives": ["elcd", "agribalyse"],
+        "reasoning": "Ecoinvent comprehensive for all products. ELCD for European products. Agribalyse for food products."
+      }
+    },
+    "by_budget": {
+      "No Budget": {
+        "options": ["elcd", "agribalyse", "uslci", "lca_commons", "bioenergiedat", "needs"],
+        "reasoning": "All free and open databases. Choose based on region and sector."
+      },
+      "Academic Budget": {
+        "options": ["ecoinvent", "elcd", "agribalyse", "uslci"],
+        "reasoning": "Ecoinvent often has academic discounts. Free databases supplement well."
+      },
+      "Commercial Budget": {
+        "options": ["ecoinvent"],
+        "reasoning": "Ecoinvent is industry standard for commercial LCA. Worth the investment for credibility."
+      }
+    },
+    "by_purpose": {
+      "Regulatory Compliance (EU)": {
+        "required": ["elcd"],
+        "recommended": ["ecoinvent"],
+        "reasoning": "ELCD may be required for EU regulations. Ecoinvent widely accepted."
+      },
+      "Regulatory Compliance (US)": {
+        "required": ["uslci", "lca_commons"],
+        "recommended": ["ecoinvent"],
+        "reasoning": "Federal databases preferred for US government compliance."
+      },
+      "Product Certification": {
+        "required": ["ecoinvent"],
+        "alternatives": ["elcd"],
+        "reasoning": "Ecoinvent is industry standard for EPDs and certifications."
+      },
+      "Academic Research": {
+        "recommended": ["ecoinvent", "elcd", "agribalyse", "uslci"],
+        "reasoning": "Free databases for student projects. Ecoinvent for publications requiring high credibility."
+      },
+      "Corporate Sustainability": {
+        "recommended": ["ecoinvent"],
+        "alternatives": ["elcd", "agribalyse"],
+        "reasoning": "Ecoinvent for comprehensive corporate footprinting. Sector-specific free databases for targeted studies."
+      },
+      "Public Communication": {
+        "recommended": ["ecoinvent", "elcd", "agribalyse"],
+        "reasoning": "Choose databases with high credibility and transparent sources."
+      }
+    }
+  },
+  "decision_tree": {
+    "questions": [
+      {
+        "question": "What is your geographic focus?",
+        "answers": {
+          "Europe": "Consider ELCD (free) or ecoinvent (paid comprehensive)",
+          "United States": "Consider USLCI/LCA Commons (free) or ecoinvent (paid comprehensive)",
+          "France + Food": "Consider Agribalyse (free food database)",
+          "Global": "Ecoinvent is best option for global coverage",
+          "Other": "Ecoinvent recommended for non-EU/US regions"
+        }
+      },
+      {
+        "question": "What sector are you assessing?",
+        "answers": {
+          "Food/Agriculture": "Agribalyse (free, EU food) or ecoinvent (global comprehensive)",
+          "Bioenergy": "BioEnergieDat (free, specialized) or ecoinvent",
+          "Energy": "ecoinvent (comprehensive) or regional databases (USLCI, ELCD)",
+          "Other": "ecoinvent (all sectors) or regional databases based on geography"
+        }
+      },
+      {
+        "question": "What is your budget?",
+        "answers": {
+          "No budget": "Use free databases: ELCD, Agribalyse, USLCI, LCA Commons",
+          "Academic": "Consider ecoinvent academic license + free supplements",
+          "Commercial": "ecoinvent is industry standard and worth investment"
+        }
+      }
+    ]
+  },
+  "recommendations_summary": {
+    "most_comprehensive": "ecoinvent",
+    "best_free_europe": "elcd",
+    "best_free_us": "uslci",
+    "best_food": "agribalyse",
+    "best_bioenergy": "bioenergiedat",
+    "best_global_free": "combination of ELCD + USLCI + Agribalyse"
+  }
+}

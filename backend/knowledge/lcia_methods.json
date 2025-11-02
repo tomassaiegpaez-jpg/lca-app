@@ -1,0 +1,328 @@
+{
+  "methods": {
+    "ReCiPe 2016 Midpoint (H)": {
+      "full_name": "ReCiPe 2016 Midpoint (Hierarchist)",
+      "type": "midpoint",
+      "version": "2016",
+      "perspective": "Hierarchist (H)",
+      "regional_focus": "Global",
+      "developed_by": "RIVM, Radboud University, Leiden University, PRé",
+      "description": "Comprehensive global impact assessment method with 18 midpoint indicators. The Hierarchist perspective uses consensus model parameters with a 100-year timeframe.",
+      "impact_categories": [
+        "Global warming",
+        "Stratospheric ozone depletion",
+        "Ionizing radiation",
+        "Ozone formation, Human health",
+        "Fine particulate matter formation",
+        "Ozone formation, Terrestrial ecosystems",
+        "Terrestrial acidification",
+        "Freshwater eutrophication",
+        "Marine eutrophication",
+        "Terrestrial ecotoxicity",
+        "Freshwater ecotoxicity",
+        "Marine ecotoxicity",
+        "Human carcinogenic toxicity",
+        "Human non-carcinogenic toxicity",
+        "Land use",
+        "Mineral resource scarcity",
+        "Fossil resource scarcity",
+        "Water consumption"
+      ],
+      "pros": [
+        "Most comprehensive coverage (18 impact categories)",
+        "Global applicability with good regional adaptation",
+        "Well-documented and widely validated",
+        "Regular updates and scientific consensus",
+        "Includes both environmental and resource depletion categories"
+      ],
+      "cons": [
+        "Complex with many indicators to interpret",
+        "Some characterization factors still have high uncertainty",
+        "Requires careful interpretation of toxicity categories"
+      ],
+      "use_cases": [
+        "Comprehensive environmental assessments",
+        "Product comparisons requiring full impact spectrum",
+        "Studies requiring both midpoint and endpoint perspectives",
+        "International/global scope studies"
+      ],
+      "compatible_databases": ["elcd", "ecoinvent", "agribalyse", "uslci", "lca_commons", "bioenergiedat", "needs"],
+      "recommendation_priority": 1
+    },
+    "ILCD 2011 Midpoint": {
+      "full_name": "ILCD 2011 Midpoint+",
+      "type": "midpoint",
+      "version": "2011",
+      "perspective": "N/A",
+      "regional_focus": "European",
+      "developed_by": "European Commission - Joint Research Centre (EC-JRC)",
+      "description": "Official European Commission method for LCA. Designed specifically for European environmental policies and product regulations.",
+      "impact_categories": [
+        "Climate change",
+        "Ozone depletion",
+        "Human toxicity, cancer effects",
+        "Human toxicity, non-cancer effects",
+        "Particulate matter",
+        "Ionizing radiation",
+        "Photochemical ozone formation",
+        "Acidification",
+        "Eutrophication terrestrial",
+        "Eutrophication freshwater",
+        "Eutrophication marine",
+        "Ecotoxicity freshwater",
+        "Land use",
+        "Water resource depletion",
+        "Mineral, fossil & renewable resource depletion"
+      ],
+      "pros": [
+        "Official EU method - required for EU Ecolabel and GPP",
+        "Specifically calibrated for European conditions",
+        "Strong scientific foundation from EC-JRC",
+        "Well-integrated with European environmental policy",
+        "Good characterization for European chemicals"
+      ],
+      "cons": [
+        "Less suitable for non-European contexts",
+        "Not as frequently updated as ReCiPe",
+        "Smaller user community outside Europe"
+      ],
+      "use_cases": [
+        "EU regulatory compliance (Ecolabel, PEF, GPP)",
+        "European environmental product declarations",
+        "Studies focusing on European supply chains",
+        "EU policy assessments"
+      ],
+      "compatible_databases": ["elcd", "ecoinvent", "agribalyse"],
+      "recommendation_priority": 2
+    },
+    "TRACI 2.1": {
+      "full_name": "Tool for the Reduction and Assessment of Chemical and other environmental Impacts",
+      "type": "midpoint",
+      "version": "2.1",
+      "perspective": "N/A",
+      "regional_focus": "United States",
+      "developed_by": "US Environmental Protection Agency (EPA)",
+      "description": "US EPA's official LCIA method with characterization factors specifically developed for US environmental conditions and regulations.",
+      "impact_categories": [
+        "Ozone depletion",
+        "Global warming",
+        "Smog",
+        "Acidification",
+        "Eutrophication",
+        "Carcinogenics",
+        "Non carcinogenics",
+        "Respiratory effects",
+        "Ecotoxicity",
+        "Fossil fuel depletion"
+      ],
+      "pros": [
+        "Official US EPA method",
+        "Characterization factors calibrated for US conditions",
+        "Excellent for US air quality impacts (smog, particulates)",
+        "Well-suited for US regulatory context",
+        "Strong focus on human health impacts"
+      ],
+      "cons": [
+        "Limited to US environmental conditions",
+        "Fewer impact categories than ReCiPe",
+        "Not suitable for global studies",
+        "Less developed resource depletion categories"
+      ],
+      "use_cases": [
+        "US regulatory compliance and reporting",
+        "US-based product and process assessments",
+        "Studies focusing on US air quality",
+        "US federal procurement and infrastructure projects"
+      ],
+      "compatible_databases": ["uslci", "lca_commons", "ecoinvent"],
+      "recommendation_priority": 3
+    },
+    "EF 3.0": {
+      "full_name": "Environmental Footprint 3.0 (Product Environmental Footprint)",
+      "type": "midpoint",
+      "version": "3.0",
+      "perspective": "N/A",
+      "regional_focus": "European (product supply chains)",
+      "developed_by": "European Commission - DG Environment",
+      "description": "EU's official method for environmental footprinting of products and organizations. Designed for supply chain environmental assessment and eco-design.",
+      "impact_categories": [
+        "Climate change",
+        "Ozone depletion",
+        "Human toxicity, cancer",
+        "Human toxicity, non-cancer",
+        "Particulate matter",
+        "Ionizing radiation, human health",
+        "Photochemical ozone formation",
+        "Acidification",
+        "Eutrophication, terrestrial",
+        "Eutrophication, freshwater",
+        "Eutrophication, marine",
+        "Ecotoxicity, freshwater",
+        "Land use",
+        "Water use",
+        "Resource use, minerals and metals",
+        "Resource use, fossils"
+      ],
+      "pros": [
+        "Official EU method for product footprinting",
+        "Excellent for supply chain and product comparisons",
+        "Mandatory for EU PEF/OEF pilots",
+        "Well-suited for consumer products",
+        "Includes normalization and weighting"
+      ],
+      "cons": [
+        "Primarily designed for European products",
+        "Complex methodology with strict rules",
+        "Requires specific data quality requirements",
+        "Less flexible than other methods"
+      ],
+      "use_cases": [
+        "EU Product Environmental Footprint (PEF) studies",
+        "Supply chain environmental assessments",
+        "Product eco-design and improvement",
+        "Agricultural and food products (especially with Agribalyse)",
+        "Consumer product environmental claims"
+      ],
+      "compatible_databases": ["agribalyse", "elcd", "ecoinvent"],
+      "recommendation_priority": 4
+    },
+    "CML-IA": {
+      "full_name": "CML-IA baseline",
+      "type": "midpoint",
+      "version": "baseline",
+      "perspective": "N/A",
+      "regional_focus": "Global (European origins)",
+      "developed_by": "Leiden University (CML)",
+      "description": "One of the oldest and most established LCIA methods. Problem-oriented approach with well-validated characterization factors.",
+      "impact_categories": [
+        "Abiotic depletion (elements)",
+        "Abiotic depletion (fossil fuels)",
+        "Global warming (GWP100)",
+        "Ozone layer depletion",
+        "Human toxicity",
+        "Freshwater aquatic ecotoxicity",
+        "Marine aquatic ecotoxicity",
+        "Terrestrial ecotoxicity",
+        "Photochemical oxidation",
+        "Acidification",
+        "Eutrophication"
+      ],
+      "pros": [
+        "Well-established and widely accepted",
+        "Long history of validation and use",
+        "Straightforward problem-oriented approach",
+        "Good for historical comparisons",
+        "Robust characterization factors"
+      ],
+      "cons": [
+        "Not updated as frequently as newer methods",
+        "Fewer impact categories than modern methods",
+        "Some characterization factors are dated",
+        "Less comprehensive than ReCiPe or ILCD"
+      ],
+      "use_cases": [
+        "Comparative studies requiring historical consistency",
+        "Educational purposes",
+        "Studies requiring simple, well-established methods",
+        "Validation and comparison with previous LCA studies"
+      ],
+      "compatible_databases": ["elcd", "ecoinvent"],
+      "recommendation_priority": 5
+    },
+    "ReCiPe 2016 Endpoint (H)": {
+      "full_name": "ReCiPe 2016 Endpoint (Hierarchist)",
+      "type": "endpoint",
+      "version": "2016",
+      "perspective": "Hierarchist (H)",
+      "regional_focus": "Global",
+      "developed_by": "RIVM, Radboud University, Leiden University, PRé",
+      "description": "Damage-oriented version of ReCiPe. Aggregates midpoint indicators into three damage categories (human health, ecosystem quality, resources) for easier communication.",
+      "impact_categories": [
+        "Human health (DALYs)",
+        "Ecosystems (species.yr)",
+        "Resources (USD2013)"
+      ],
+      "pros": [
+        "Simplified communication with 3 damage categories",
+        "Easier for decision-makers and stakeholders",
+        "Aggregated results show overall environmental profile",
+        "Links to societal concerns (health, nature, resources)"
+      ],
+      "cons": [
+        "Higher uncertainty due to additional modeling steps",
+        "Loss of detailed information from midpoint level",
+        "More controversial due to value choices in aggregation",
+        "Less suitable for detailed environmental analysis"
+      ],
+      "use_cases": [
+        "Communication to non-technical stakeholders",
+        "Strategic decision-making requiring overview",
+        "Public reporting and corporate sustainability",
+        "Studies where simplified metrics are needed"
+      ],
+      "compatible_databases": ["elcd", "ecoinvent", "agribalyse", "uslci"],
+      "recommendation_priority": 6
+    }
+  },
+  "selection_guidance": {
+    "by_database": {
+      "elcd": {
+        "preferred_methods": ["ILCD 2011 Midpoint", "ReCiPe 2016 Midpoint (H)", "EF 3.0"],
+        "reasoning": "ELCD is a European database, so European methods (ILCD, EF 3.0) are most appropriate. ReCiPe works well as a global comprehensive alternative."
+      },
+      "ecoinvent": {
+        "preferred_methods": ["ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint", "EF 3.0"],
+        "reasoning": "Ecoinvent is global and comprehensive, matching well with ReCiPe. European-focused studies can use ILCD or EF 3.0."
+      },
+      "agribalyse": {
+        "preferred_methods": ["EF 3.0", "ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint"],
+        "reasoning": "Agribalyse is designed for use with EF 3.0 for food products. ReCiPe and ILCD are good alternatives for comprehensive assessment."
+      },
+      "uslci": {
+        "preferred_methods": ["TRACI 2.1", "ReCiPe 2016 Midpoint (H)"],
+        "reasoning": "USLCI is a US database, so TRACI (US EPA method) is most appropriate. ReCiPe works as a global comprehensive alternative."
+      },
+      "lca_commons": {
+        "preferred_methods": ["TRACI 2.1", "ReCiPe 2016 Midpoint (H)"],
+        "reasoning": "LCA Commons is US federal data, so TRACI is the preferred US EPA method. ReCiPe for comprehensive global perspective."
+      },
+      "bioenergiedat": {
+        "preferred_methods": ["ILCD 2011 Midpoint", "ReCiPe 2016 Midpoint (H)"],
+        "reasoning": "German/European bioenergy data pairs well with ILCD. ReCiPe for comprehensive assessment."
+      },
+      "needs": {
+        "preferred_methods": ["ILCD 2011 Midpoint", "ReCiPe 2016 Midpoint (H)"],
+        "reasoning": "European energy data works best with ILCD. ReCiPe for broader environmental coverage."
+      }
+    },
+    "by_region": {
+      "Europe": ["ILCD 2011 Midpoint", "EF 3.0", "ReCiPe 2016 Midpoint (H)"],
+      "United States": ["TRACI 2.1", "ReCiPe 2016 Midpoint (H)"],
+      "Global": ["ReCiPe 2016 Midpoint (H)", "CML-IA"],
+      "Asia": ["ReCiPe 2016 Midpoint (H)"],
+      "Other": ["ReCiPe 2016 Midpoint (H)"]
+    },
+    "by_sector": {
+      "Food and Agriculture": ["EF 3.0", "ReCiPe 2016 Midpoint (H)"],
+      "Energy": ["ReCiPe 2016 Midpoint (H)", "TRACI 2.1"],
+      "Manufacturing": ["ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint"],
+      "Construction": ["ReCiPe 2016 Midpoint (H)", "TRACI 2.1"],
+      "Transport": ["ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint"],
+      "Chemicals": ["ReCiPe 2016 Midpoint (H)", "TRACI 2.1"],
+      "Consumer Products": ["EF 3.0", "ReCiPe 2016 Midpoint (H)"]
+    },
+    "by_purpose": {
+      "Regulatory Compliance (EU)": ["ILCD 2011 Midpoint", "EF 3.0"],
+      "Regulatory Compliance (US)": ["TRACI 2.1"],
+      "Product Comparison": ["ReCiPe 2016 Midpoint (H)", "EF 3.0"],
+      "Eco-design": ["EF 3.0", "ReCiPe 2016 Midpoint (H)"],
+      "Strategic Decision Making": ["ReCiPe 2016 Endpoint (H)"],
+      "Academic Research": ["ReCiPe 2016 Midpoint (H)", "ILCD 2011 Midpoint"],
+      "Public Communication": ["ReCiPe 2016 Endpoint (H)", "EF 3.0"]
+    }
+  },
+  "default_method": {
+    "name": "ReCiPe 2016 Midpoint (H)",
+    "reasoning": "Most comprehensive and widely accepted global method. Good default when specific context is unknown."
+  }
+}

@@ -36,9 +36,22 @@ html, body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 1rem 2rem;
-  text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-text {
+  text-align: left;
+  flex: 1;
 }
 
 .app-header h1 {
@@ -51,6 +64,60 @@ html, body {
   font-size: 0.85rem;
   opacity: 0.95;
   font-weight: 300;
+}
+
+/* Header Controls (Database + Mode Toggle) */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mode-toggle label {
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.toggle-switch {
+  display: flex;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.25rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toggle-option {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.toggle-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-option.active {
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Grid Layout: 40% chat, 60% results */
